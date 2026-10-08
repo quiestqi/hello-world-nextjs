@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { saveProfile, uploadAvatar } from "./actions";
@@ -67,6 +68,10 @@ export default async function ProfilePage({
   return (
     <main style={{ padding: 40, maxWidth: 500 }}>
       <h1>Profile</h1>
+      <nav aria-label="Profile navigation" style={{ display: "flex", gap: 20, margin: "20px 0" }}>
+        <Link href="/">Coffee list</Link>
+        <Link href="/members">Members</Link>
+      </nav>
       <p>{user.email}</p>
 
       {incomplete && <p>Welcome! Please add your first and last name.</p>}

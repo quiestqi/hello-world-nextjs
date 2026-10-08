@@ -66,19 +66,7 @@ export default async function Home() {
           ))}
         </ul>
       )}
-      <form action={signOut} style={{ marginTop: 24 }}>
-  <button
-    type="submit"
-    style={{
-      padding: "12px 20px",
-      background: "#30563b",
-      color: "white",
-      borderRadius: 8,
-    }}
-  >
-    Sign out
-  </button>
-</form>
+
     </main>
   );
 }
