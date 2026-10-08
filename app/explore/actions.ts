@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { buildPrompt, moods, validateWalk, type Place } from "@/lib/routes";
+import { buildPrompt, chooseVariation, moods, neighborhoods, validateWalk, type Place, type Walk } from "@/lib/routes";
 
 type Result = { error?: string; success?: string };
 export async function generateWalk(_previous: Result, form: FormData): Promise<Result> {
@@ -11,17 +11,23 @@ export async function generateWalk(_previous: Result, form: FormData): Promise<R
   if (!user) return { error: "Please sign in before creating a walk." };
   const mood = String(form.get("mood") ?? "");
   const duration = Number(form.get("duration"));
-  if (!moods.some(m => m === mood) || ![60,90,120].includes(duration)) return { error: "Choose a mood and outing length." };
+  const neighborhood = String(form.get("neighborhood") ?? "");
+  if (!neighborhoods.some(n => n === neighborhood) || !moods.some(m => m === mood) || ![60,90,120].includes(duration)) return { error: "Choose an area, mood and outing length." };
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return { error: "AI generation is being set up. Please try again later." };
-  const { data, error } = await supabase.from("places").select("id,name,kind,address,description,visit_note,source_url");
+  const { data, error } = await supabase.from("places").select("*").eq("neighborhood",neighborhood);
   if (error || !data?.length) return { error: "Unable to load the place catalogue. Please try again." };
   const date = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
-  const places = (data as Place[]).filter(p => p.kind !== "garden" || (date.getMonth() >= 3 && date.getMonth() <= 9 && date.getDay() !== 1));
+  const places = (data as Place[]).filter(p => (p.kind !== "garden" || (date.getMonth() >= 3 && date.getMonth() <= 9 && date.getDay() !== 1)) && (p.id !== "earth-room" || (date.getDay() >= 3 || date.getDay() === 0) && mood !== "Slow morning"));
+  const { data: recent, error: historyError } = await supabase.from("generations").select("content").eq("creator_id",user.id).order("created_at",{ascending:false}).limit(20);
+  if (historyError) return { error: "Unable to check your previous routes. Please try again." };
+  const previous = recent?.map(g => g.content as Walk).find(w => w.stops.every(s => data.some(p => p.id === s.place_id)));
+  if (places.filter(p => p.kind === "coffee").length < 2 || places.filter(p => p.kind !== "coffee").length < 2) return { error: "There aren't enough available places in this area today. Try another area." };
+  const variation = chooseVariation(places, neighborhood, previous);
   const { data: attempt, error: quotaError } = await supabase.rpc("reserve_generation");
   if (quotaError || !attempt) return { error: quotaError?.message.includes("Daily generation") ? "You've used your five attempts for the last 24 hours. Come back tomorrow." : "Unable to start a generation. Please try again." };
-  const prompt = buildPrompt(places, mood, duration);
-  let model = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
+  const prompt = buildPrompt(places, mood, duration, variation);
+  let model = process.env.GEMINI_MODEL || "gemini-flash-lite-latest";
   try {
     const requestModel = (name: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(name)}:generateContent`, {
       method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
@@ -71,7 +77,7 @@ export async function generateWalk(_previous: Result, form: FormData): Promise<R
       throw new Error("Incomplete generation");
     }
     const text = candidate.content?.parts?.filter((p: { text?: string; thought?: boolean }) => p.text && !p.thought).map((p: { text: string }) => p.text).join("");
-    const walk = validateWalk(JSON.parse(text), places, duration);
+    const walk = validateWalk(JSON.parse(text), places, duration, variation);
     const { error: saveError } = await supabase.rpc("save_generation", { p_attempt: attempt, p_content: walk, p_prompt: prompt, p_mood: mood, p_duration: duration, p_model: model });
     if (saveError) {
       console.error("coffee-walk save failed", { code: saveError.code });

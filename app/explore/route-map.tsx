@@ -10,7 +10,7 @@ export function RouteMap({ stops }: { stops: Place[] }) {
   const container = useRef<HTMLDivElement>(null);
   const [message, setMessage] = useState("Loading your route map…");
   // A vote refresh should preserve the map's zoom when its stops are unchanged.
-  const encodedStops = JSON.stringify(stops.map(({ id, name, address }) => ({ id, name, address })));
+  const encodedStops = JSON.stringify(stops.map(({ id, name, address, latitude, longitude }) => ({ id, name, address, latitude, longitude })));
 
   useEffect(() => {
     const element = container.current;
@@ -18,17 +18,18 @@ export function RouteMap({ stops }: { stops: Place[] }) {
     let cancelled = false;
     let map: LeafletMap | undefined;
     let resize: ResizeObserver | undefined;
-    const entries = JSON.parse(encodedStops) as Pick<Place, "id" | "name" | "address">[];
+    const entries = JSON.parse(encodedStops) as Pick<Place, "id" | "name" | "address" | "latitude" | "longitude">[];
     async function initialize() {
       try {
         const L = await import("leaflet");
         if (cancelled) return;
-        if (entries.some(p => !placeCoordinates[p.id])) {
+        const location = (p: typeof entries[number]) => typeof p.latitude === "number" && typeof p.longitude === "number" ? { lat: p.latitude, lng: p.longitude } : placeCoordinates[p.id];
+        if (entries.some(p => !location(p))) {
           setMessage("Map locations are unavailable. Use the walking directions below.");
           return;
         }
         const coordinates = entries.map(p => {
-          const { lat, lng } = placeCoordinates[p.id];
+          const { lat, lng } = location(p);
           return L.latLng(lat, lng);
         });
         map = L.map(element!, { scrollWheelZoom: false, zoomSnap: 0.5 });

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateWalk, mapsUrl } from '../lib/routes.ts';
+import { validateWalk, mapsUrl, chooseVariation, buildPrompt } from '../lib/routes.ts';
 
 const places = [
   { id: 'coffee', kind: 'coffee', address: '44 Charles Street, New York, NY' },
@@ -32,4 +32,26 @@ test('walking directions use curated addresses in itinerary order', () => {
   assert.equal(url.searchParams.get('origin'), places[0].address);
   assert.equal(url.searchParams.get('destination'), places[2].address);
   assert.equal(url.searchParams.get('waypoints'), places[1].address);
+});
+
+test('the next walk must start at another cafe and prefers a newly visited destination', () => {
+  const catalogue = [...places, {id:'other-coffee',kind:'coffee'}, {id:'new-garden',kind:'garden'}];
+  for (const random of [() => 0, () => .999]) {
+    const choice = chooseVariation(catalogue, 'SoHo / Nolita', valid(), random);
+    assert.equal(choice.startId,'other-coffee');
+    assert.equal(choice.highlightId,'new-garden');
+    const prompt = buildPrompt(catalogue,'Slow morning',60,choice);
+    assert.match(prompt,/SoHo \/ Nolita/);
+    assert.match(prompt,/Start at other-coffee/);
+    assert.match(prompt,/Include new-garden/);
+  }
+});
+test('validation rejects renamed duplicates and model output that ignores the selected variation', () => {
+  const choice = {neighborhood:'West Village', startId:'coffee',highlightId:'park',previous:valid()};
+  assert.throws(() => validateWalk({...valid(),title:'A new title'}, places,60,choice));
+  assert.throws(() => validateWalk(valid(),places,60,{...choice,startId:'other-coffee',previous:undefined}));
+  assert.throws(() => validateWalk(valid(),places,60,{...choice,highlightId:'new-garden',previous:undefined}));
+});
+test('unavailable coffee alternatives cannot silently produce the same route', () => {
+  assert.throws(() => chooseVariation(places,'West Village',valid()));
 });
