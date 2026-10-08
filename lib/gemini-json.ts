@@ -4,7 +4,7 @@ export async function requestGeminiJson(key: string, prompt: string) {
   let model = process.env.GEMINI_MODEL || "gemini-flash-lite-latest";
   const request = (name: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(name)}:generateContent`, {
     method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":key},
-    body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseMimeType:"application/json",maxOutputTokens:2048}}),
+    body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseMimeType:"application/json",maxOutputTokens:4096,responseSchema:{type:"OBJECT",properties:{background:{type:"STRING"},ink:{type:"STRING"},accent:{type:"STRING"},foliage:{type:"STRING"},subtitle:{type:"STRING"},decorations:{type:"ARRAY",items:{type:"STRING"}},captions:{type:"ARRAY",items:{type:"STRING"}}},required:["background","ink","accent","foliage","subtitle","decorations","captions"]}}}),
     signal:AbortSignal.timeout(30000),cache:"no-store"
   });
   let response = await request(model);

@@ -42,7 +42,11 @@ export async function generateIllustration(_previous: Result, form: FormData): P
       const candidate = output.candidates?.[0];
       if (candidate?.finishReason !== "STOP") return fail("Gemini couldn't finish this design. Try again later.");
       const text = candidate.content?.parts?.filter((p:{text?:string;thought?:boolean})=>p.text&&!p.thought).map((p:{text:string})=>p.text).join("");
-      const design = validateMapDesign(JSON.parse(text),ordered.length);
+      const draft = JSON.parse(text);
+      const design = validateMapDesign({ ...draft, subtitle:typeof draft.subtitle === "string" ? draft.subtitle.trim().slice(0,70) : draft.subtitle,
+        captions:Array.isArray(draft.captions) ? draft.captions.map((c:unknown)=>typeof c === "string" ? c.trim().slice(0,40) : c) : draft.captions,
+        decorations:Array.isArray(draft.decorations) ? draft.decorations.filter((d:unknown)=>["sun","leaves","stars","camera","conversation"].includes(String(d))).slice(0,3) : draft.decorations
+      },ordered.length);
       const { error } = await supabase.rpc("save_illustration_design",{p_id:id,p_path:path,p_model:model,p_design:design});
       if (error) return fail("Couldn't save the map design. Please try again.");
       revalidatePath("/explore");
@@ -74,7 +78,8 @@ export async function generateIllustration(_previous: Result, form: FormData): P
     if (finishError) return fail("The map was drawn but couldn't be attached to this walk. Please refresh.");
     revalidatePath("/explore");
     return { success: "Your illustrated map is ready." };
-  } catch {
+  } catch (failure) {
+    console.error("illustration pipeline failed", {model,category:failure instanceof Error ? failure.name : "unknown"});
     return fail("Gemini couldn't finish this map in time. The text route and real map are still available.");
   }
 }
