@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { requestGeminiJson } from "@/lib/gemini-json";
 import { mapDesignPrompt, validateMapDesign } from "@/lib/map-design";
 import type { Walk, Place } from "@/lib/routes";
 
@@ -33,10 +34,9 @@ export async function generateIllustration(_previous: Result, form: FormData): P
   }
   try {
     if (!imageMode) {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
-        method:"POST", headers:{"Content-Type":"application/json","x-goog-api-key":key},
-        body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseMimeType:"application/json",maxOutputTokens:2048,responseSchema:{type:"OBJECT",properties:{background:{type:"STRING"},ink:{type:"STRING"},accent:{type:"STRING"},foliage:{type:"STRING"},subtitle:{type:"STRING"},decorations:{type:"ARRAY",items:{type:"STRING",enum:["sun","leaves","stars","camera","conversation"]},maxItems:3},captions:{type:"ARRAY",items:{type:"STRING"},minItems:ordered.length,maxItems:ordered.length}},required:["background","ink","accent","foliage","subtitle","decorations","captions"]}}}),signal:AbortSignal.timeout(30000),cache:"no-store"
-      });
+      const generated = await requestGeminiJson(key,prompt);
+      model = generated.model;
+      const response = generated.response;
       if (!response.ok) return fail(response.status === 429 ? "Gemini's free text quota is temporarily full. Try again later." : "Gemini couldn't finish the map design. Try again later.");
       const output = await response.json();
       const candidate = output.candidates?.[0];
