@@ -8,6 +8,8 @@ Sam wants an easy, affordable reason to leave the dorms. One coffee and mostly f
 
 Fresh community walks and visible votes give visitors a reason to return and help surface appealing ideas. Votes describe interest in an itinerary, not a review of the real business. The improvement over an isolated caption generator is that generation has constraints, a practical next action, and community feedback attached to it. Expansion to more neighborhoods should follow usage and PM feedback, rather than add unverified places.
 
+Each route includes an interactive Leaflet street map with numbered stops, safe text popups and a dotted visit-order line. It uses curated OSM coordinates (including the park's arch), not AI-invented locations. Dotted segments are an overview, not computed walking directions; the Google Maps link supplies actual street navigation. OSM tiles load only when the map is visible, use normal browser caching and retain attribution. No Mapbox or Google Maps API key is required. Coordinates and OSM object sources are recorded in `lib/place-coordinates.ts`; positions identify venues/buildings and are not guaranteed accessible entrances. A titled rating panel explains how each up/down vote is saved.
+
 ## Setup
 
 Apply `supabase/migrations/202610080002_coffee_walks.sql` once to the existing project. The migration preserves existing rows, seeds five sourced places, enables RLS on all public application tables, and preserves avatar storage policies. No service-role key is used by the app.

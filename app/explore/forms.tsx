@@ -20,9 +20,15 @@ export function VoteForm({ id, voted, up, down }: { id: string; voted?: number; 
   const [state, action, pending] = useActionState(voteOnWalk, {});
   return <form action={action} className="walk-vote">
     <input type="hidden" name="generation_id" value={id} />
+    <fieldset disabled={pending || !!voted}>
+    <legend>Rate this AI-generated walk</legend>
+    <p className="walk-small">Would you try this route? Your vote helps the community choose.</p>
+    <div className="walk-vote-buttons">
     <button name="value" value="1" disabled={pending || !!voted} aria-pressed={voted === 1}>↑ Would walk · {up}</button>
     <button name="value" value="-1" disabled={pending || !!voted} aria-pressed={voted === -1}>↓ Not for me · {down}</button>
-    <span className="walk-small">{pending ? "Saving…" : voted ? "Your vote is saved" : "One vote per person"}</span>
+    </div>
+    </fieldset>
+    <span className="walk-small" role="status">{pending ? "Saving your vote…" : voted ? `Your ${voted === 1 ? "upvote" : "downvote"} is saved. One vote per person.` : "One vote per person · saved to this route"}</span>
     {state.error && <p role="alert">{state.error}</p>}{state.success && <p role="status">{state.success}</p>}
   </form>;
 }
