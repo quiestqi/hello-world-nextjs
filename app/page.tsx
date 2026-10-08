@@ -35,6 +35,12 @@ export default async function Home() {
     <main style={{ padding: 40 }}>
       <h1>Coffee List ☕</h1>
 
+      <section style={{ marginTop: 24, padding: 24, background: "#e9eedf", color: "#263e32", borderRadius: 12 }}>
+        <h2 style={{ fontSize: 26, marginBottom: 12 }}>Let your next cup take you somewhere.</h2>
+        <p style={{ marginBottom: 16 }}>Generate a coffee-first Village walk, discover real places, and rate the community’s AI itineraries.</p>
+        <Link href="/explore" style={{ fontWeight: 700, textDecoration: "underline" }}>Create a NYC coffee walk →</Link>
+      </section>
+
       <nav
         aria-label="Account navigation"
         style={{
@@ -45,6 +51,7 @@ export default async function Home() {
         }}
       >
         <Link href="/members">Members</Link>
+        <Link href="/explore">NYC walks</Link>
         <Link href="/profile">Profile</Link>
         <form action={signOut}>
           <button type="submit">Sign out</button>
