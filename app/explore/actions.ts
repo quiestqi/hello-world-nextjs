@@ -33,15 +33,29 @@ export async function generateWalk(_previous: Result, form: FormData): Promise<R
         }, required: ["title","summary","stops"] }
       } }), signal: AbortSignal.timeout(45000), cache: "no-store"
     });
-    if (!response.ok) throw new Error("Model request failed");
+    if (!response.ok) {
+      // Log codes only: provider bodies may contain credentials or request data.
+      console.error("coffee-walk model request", { model, status: response.status });
+      if (response.status === 429) return { error: "AI generation is at its usage limit. Please try again later." };
+      if (response.status === 404) return { error: "The configured AI model is unavailable. Please contact the site owner." };
+      if (response.status === 400 || response.status === 403) return { error: "The AI service configuration needs attention. Please contact the site owner." };
+      throw new Error("Model request failed");
+    }
     const output = await response.json();
     const candidate = output.candidates?.[0];
-    if (candidate?.finishReason !== "STOP") throw new Error("Incomplete generation");
+    if (candidate?.finishReason !== "STOP") {
+      console.error("coffee-walk incomplete output", { model, reason: candidate?.finishReason ?? "missing" });
+      throw new Error("Incomplete generation");
+    }
     const text = candidate.content?.parts?.filter((p: { text?: string; thought?: boolean }) => p.text && !p.thought).map((p: { text: string }) => p.text).join("");
     const walk = validateWalk(JSON.parse(text), places, duration);
     const { error: saveError } = await supabase.rpc("save_generation", { p_attempt: attempt, p_content: walk, p_prompt: prompt, p_mood: mood, p_duration: duration, p_model: model });
-    if (saveError) return { error: "Your walk could not be saved. Please try again." };
-  } catch {
+    if (saveError) {
+      console.error("coffee-walk save failed", { code: saveError.code });
+      return { error: "Your walk could not be saved. Please try again." };
+    }
+  } catch (failure) {
+    console.error("coffee-walk generation failed", { category: failure instanceof Error ? failure.name : "unknown" });
     return { error: "The AI couldn't finish a valid walk this time. Please try again. This attempt counts toward your daily limit." };
   }
   revalidatePath("/explore");
