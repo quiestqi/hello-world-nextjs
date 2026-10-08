@@ -39,7 +39,7 @@ export async function saveProfile(formData: FormData) {
     redirect("/profile?error=save");
   }
 
-  redirect("/profile?saved=1");
+  redirect("/");
 }
 export async function uploadAvatar(formData: FormData) {
   const supabase = await createClient();

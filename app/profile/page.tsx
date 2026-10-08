@@ -74,7 +74,16 @@ export default async function ProfilePage({
       </nav>
       <p>{user.email}</p>
 
-      {incomplete && <p>Welcome! Please add your first and last name.</p>}
+      {incomplete ? (
+        <p>Enter your first and last name, then save to view the coffee data. A profile photo is optional.</p>
+      ) : (
+        <section style={{ margin: "24px 0" }}>
+          <p>Your profile is ready. Continue to explore the coffee data.</p>
+          <Link href="/" style={{ ...buttonStyle, display: "inline-block", marginTop: 12 }}>
+            Enter Coffee List →
+          </Link>
+        </section>
+      )}
 
       {params.saved === "1" && (
         <p
@@ -120,12 +129,13 @@ export default async function ProfilePage({
         </label>
 
         <button type="submit" style={buttonStyle}>
-          Save name
+          Save and enter Coffee List →
         </button>
       </form>
 
       <section style={{ marginTop: 40 }}>
-        <h2>Profile photo</h2>
+        <h2>Profile photo (optional)</h2>
+        <p>You can add or change your photo anytime.</p>
 
         {photoUrl && (
           <picture>
@@ -163,6 +173,12 @@ export default async function ProfilePage({
           </button>
         </form>
       </section>
+
+      {!incomplete && (
+        <Link href="/" style={{ ...buttonStyle, display: "inline-block", marginTop: 24 }}>
+          Enter Coffee List →
+        </Link>
+      )}
     </main>
   );
 }
