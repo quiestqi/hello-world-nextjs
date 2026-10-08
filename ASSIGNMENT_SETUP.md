@@ -18,6 +18,6 @@ Keep NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY on the ex
 
 ## Verification
 
-In a signed-out browser, the coffee list is visible and /members and /profile redirect to /login. Google login sends a new member to /profile with a request for first and last name. Save names, open /members, change names, upload a JPG/PNG/WebP under 5 MB, reload the profile, then sign out and confirm /members is gated again. Image bytes are in Storage; profiles.avatar_url contains only the object path.
+In a signed-out browser, /, /members and /profile redirect to /login before content is fetched. Google login sends a new member to /profile with a request for first and last name. Save names, open /members, change names, upload a JPG/PNG/WebP under 5 MB, reload the profile, then sign out and confirm /members is gated again. Image bytes are in Storage; profiles.avatar_url contains only the object path.
 
 Local checks: npm ci, npm run lint, npm run build. Build checks do not establish that live OAuth or the database is configured.

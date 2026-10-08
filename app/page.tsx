@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/auth/actions";
 
@@ -8,6 +9,22 @@ export default async function Home() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (!user) redirect("/login");
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("first_name, last_name")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError) {
+    return <main style={{ padding: 40 }}>Unable to load your profile. Please try again later.</main>;
+  }
+
+  if (!profile.first_name?.trim() || !profile.last_name?.trim()) {
+    redirect("/profile");
+  }
 
   const { data: coffees, error } = await supabase
     .from("coffees")
@@ -27,28 +44,11 @@ export default async function Home() {
           margin: "24px 0",
         }}
       >
-        {user ? (
-          <>
-            <Link href="/members">Members</Link>
-            <Link href="/profile">Profile</Link>
-
-            <form action={signOut}>
-              <button type="submit">Sign out</button>
-            </form>
-          </>
-        ) : (
-          <Link
-            href="/login"
-            style={{
-              padding: "12px 20px",
-              background: "#30563b",
-              color: "white",
-              borderRadius: 8,
-            }}
-          >
-            Sign in / Join Coffee Club
-          </Link>
-        )}
+        <Link href="/members">Members</Link>
+        <Link href="/profile">Profile</Link>
+        <form action={signOut}>
+          <button type="submit">Sign out</button>
+        </form>
       </nav>
 
       {error ? (

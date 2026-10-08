@@ -32,6 +32,7 @@ export default async function MembersPage() {
     <main style={{ padding: 40 }}>
       <h1>Welcome to Coffee Club, {profile.first_name}!</h1>
       <p>This page is only available to signed-in members.</p>
+      <Link href="/">Browse coffees</Link>
 
       <Link
         href="/profile"

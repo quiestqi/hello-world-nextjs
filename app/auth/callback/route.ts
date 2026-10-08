@@ -26,7 +26,7 @@ export async function GET(request: Request) {
           profile?.first_name?.trim() && profile?.last_name?.trim();
 
         return NextResponse.redirect(
-          new URL(complete ? "/members" : "/profile", url.origin)
+          new URL(complete ? "/" : "/profile", url.origin)
         );
       }
     }
