@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { buildPrompt, chooseVariation, moods, neighborhoods, validateWalk, type Place, type Walk } from "@/lib/routes";
 
+import { generateIllustration } from "./illustration-action";
+
 type Result = { error?: string; success?: string };
 export async function generateWalk(_previous: Result, form: FormData): Promise<Result> {
   const supabase = await createClient();
@@ -27,6 +29,7 @@ export async function generateWalk(_previous: Result, form: FormData): Promise<R
   const { data: attempt, error: quotaError } = await supabase.rpc("reserve_generation");
   if (quotaError || !attempt) return { error: quotaError?.message.includes("Daily generation") ? "You've used your five attempts for the last 24 hours. Come back tomorrow." : "Unable to start a generation. Please try again." };
   const prompt = buildPrompt(places, mood, duration, variation);
+  let imageNotice = "";
   let model = process.env.GEMINI_MODEL || "gemini-flash-lite-latest";
   try {
     const requestModel = (name: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(name)}:generateContent`, {
@@ -78,17 +81,21 @@ export async function generateWalk(_previous: Result, form: FormData): Promise<R
     }
     const text = candidate.content?.parts?.filter((p: { text?: string; thought?: boolean }) => p.text && !p.thought).map((p: { text: string }) => p.text).join("");
     const walk = validateWalk(JSON.parse(text), places, duration, variation);
-    const { error: saveError } = await supabase.rpc("save_generation", { p_attempt: attempt, p_content: walk, p_prompt: prompt, p_mood: mood, p_duration: duration, p_model: model });
+    const { data: generationId, error: saveError } = await supabase.rpc("save_generation", { p_attempt: attempt, p_content: walk, p_prompt: prompt, p_mood: mood, p_duration: duration, p_model: model });
     if (saveError) {
       console.error("coffee-walk save failed", { code: saveError.code });
       return { error: "Your walk could not be saved. Please try again." };
     }
+    const imageForm = new FormData();
+    imageForm.set("generation_id",generationId);
+    const illustration = await generateIllustration({},imageForm);
+    imageNotice = illustration.error ? ` ${illustration.error}` : " Your Gemini illustrated map is ready too.";
   } catch (failure) {
     console.error("coffee-walk generation failed", { category: failure instanceof Error ? failure.name : "unknown" });
     return { error: "The AI couldn't finish a valid walk this time. Please try again. This attempt counts toward your daily limit." };
   }
   revalidatePath("/explore");
-  return { success: "Your walk is ready! Find it at the top of Community walks below." };
+  return { success: "Your walk is ready! Find it at the top of Community walks below." + imageNotice };
 }
 
 export async function voteOnWalk(_previous: Result, form: FormData): Promise<Result> {

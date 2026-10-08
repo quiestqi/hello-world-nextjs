@@ -5,7 +5,10 @@ import { signOut } from "@/app/auth/actions";
 import { mapsUrl, neighborhoods, type Place, type Walk } from "@/lib/routes";
 import { GenerateForm, VoteForm } from "./forms";
 import { RouteMap } from "./route-map";
+import { Illustration } from "./illustration";
 import "./walks.css";
+
+export const maxDuration = 180;
 
 export default async function Explore() {
   const supabase = await createClient();
@@ -24,6 +27,12 @@ export default async function Explore() {
     supabase.rpc("vote_totals",{p_ids:ids}),
     supabase.from("generation_prompts").select("generation_id,prompt").in("generation_id",ids)
   ]) : [{data:[],error:null},{data:[],error:null},{data:[]}];
+  const { data: illustrations } = ids.length ? await supabase.from("generation_illustrations").select("generation_id,status,storage_path").in("generation_id",ids) : { data: [] };
+  const imageUrls = new Map<string,string>();
+  await Promise.all((illustrations ?? []).filter(i => i.status === "ready" && i.storage_path).map(async i => {
+    const { data } = await supabase.storage.from("walk-illustrations").createSignedUrl(i.storage_path,3600);
+    if (data) imageUrls.set(i.generation_id,data.signedUrl);
+  }));
   const places = (catalogue ?? []) as Place[];
   const voteDataFailed = votesError || totalsError;
   const counts = Object.fromEntries(neighborhoods.map(n => [n, places.filter(p => p.neighborhood === n).length]));
@@ -37,10 +46,10 @@ export default async function Explore() {
         if (stops.some(p => !p)) return null;
         const counts = (totals ?? []).find((t: {generation_id:string}) => t.generation_id === g.id);
         const prompt = prompts?.find(p => p.generation_id === g.id)?.prompt;
-        return <article className="walk-card" key={g.id}><div className="walk-card-meta"><span>{stops[0]?.neighborhood ?? "West Village"}<br />{g.duration} min outing · {g.mood}</span><span>{g.creator_id === user.id ? "Your walk" : "Community"}</span></div><h3>{route.title}</h3><p>{route.summary}</p><RouteMap stops={stops as Place[]} /><ol className="walk-stops">{route.stops.map((stop,i) => { const place = stops[i]!; return <li key={place.id}><span className="walk-stop-number">{i+1}</span><div><h4>{place.name} <small>~{stop.minutes} min</small></h4><p>{stop.reason}</p><p className="walk-activity">Try this: {stop.activity}</p><details><summary>Address & visiting notes</summary><p>{place.address}</p><p>{place.visit_note}</p><a href={place.source_url} target="_blank" rel="noreferrer">Official information ↗</a></details></div></li>; })}</ol><a className="walk-map" href={mapsUrl(stops as Place[])} target="_blank" rel="noreferrer">Open walking directions ↗</a><p className="walk-small">AI itinerary · time is a planning estimate. Check opening hours and directions before heading out.</p>{voteDataFailed ? <p role="alert">Votes are temporarily unavailable. Refresh before voting.</p> : <VoteForm id={g.id} voted={votes?.find(v => v.generation_id === g.id)?.value} up={Number(counts?.upvotes ?? 0)} down={Number(counts?.downvotes ?? 0)} />}{prompt && <details className="walk-prompt"><summary>Your generation prompt</summary><p>Model: {g.model}</p><pre>{prompt}</pre></details>}</article>;
+        return <article className="walk-card" key={g.id}><div className="walk-card-meta"><span>{stops[0]?.neighborhood ?? "West Village"}<br />{g.duration} min outing · {g.mood}</span><span>{g.creator_id === user.id ? "Your walk" : "Community"}</span></div><div className="walk-card-layout"><div className="walk-card-copy"><h3>{route.title}</h3><p>{route.summary}</p><details className="walk-route-details"><summary>Explore the {stops.length} stops</summary><ol className="walk-stops">{route.stops.map((stop,i) => { const place = stops[i]!; return <li key={place.id}><span className="walk-stop-number">{i+1}</span><div><h4>{place.name} <small>~{stop.minutes} min</small></h4><p>{stop.reason}</p><p className="walk-activity">Try this: {stop.activity}</p><details><summary>Address & visiting notes</summary><p>{place.address}</p><p>{place.visit_note}</p><a href={place.source_url} target="_blank" rel="noreferrer">Official information ↗</a></details></div></li>; })}</ol></details><a className="walk-map" href={mapsUrl(stops as Place[])} target="_blank" rel="noreferrer">Open walking directions ↗</a><p className="walk-small">AI itinerary · time is a planning estimate. Check opening hours and directions before heading out.</p>{voteDataFailed ? <p role="alert">Votes are temporarily unavailable. Refresh before voting.</p> : <VoteForm id={g.id} voted={votes?.find(v => v.generation_id === g.id)?.value} up={Number(counts?.upvotes ?? 0)} down={Number(counts?.downvotes ?? 0)} />}{prompt && <details className="walk-prompt"><summary>Your generation prompt</summary><p>Model: {g.model}</p><pre>{prompt}</pre></details>}</div><aside className="walk-card-visual"><Illustration id={g.id} title={route.title} url={imageUrls.get(g.id)} owner={g.creator_id === user.id} status={illustrations?.find(i => i.generation_id === g.id)?.status} /><details className="walk-navigation-map"><summary>Real map & navigation</summary><RouteMap stops={stops as Place[]} /></details></aside></div></article>;
       })}</div>}
     </section>
-    <section className="walk-section"><p className="walk-eyebrow">MORE DETOURS, REAL PLACES</p><h2>The places behind your walk</h2><p>Choose an area, then discover a new combination. Every place has a source; AI connects the stops.</p>{neighborhoods.map(n => <details key={n} className="walk-area-catalogue" open={n === "West Village"}><summary>{n} · {counts[n]} places</summary><div className="walk-places">{places.filter(p => p.neighborhood === n).map(p => <article key={p.id}><span className="walk-place-kind">{p.kind}</span><h3>{p.name}</h3><p>{p.address}</p><p>{p.description}</p><p className="walk-small">{p.visit_note}</p><a href={p.source_url} target="_blank" rel="noreferrer">Source information ↗</a>{p.coordinate_source_url && <a className="walk-place-source" href={p.coordinate_source_url} target="_blank" rel="noreferrer">Map record ↗</a>}</article>)}</div></details>)}</section>
+    <section className="walk-section"><p className="walk-eyebrow">MORE DETOURS, REAL PLACES</p><h2>The places behind your walk</h2><p>Choose an area, then discover a new combination. Every place has a source; AI connects the stops.</p>{neighborhoods.map(n => <details key={n} className="walk-area-catalogue"><summary>{n} · {counts[n]} places</summary><div className="walk-places">{places.filter(p => p.neighborhood === n).map(p => <article key={p.id}><span className="walk-place-kind">{p.kind}</span><h3>{p.name}</h3><p>{p.address}</p><p>{p.description}</p><p className="walk-small">{p.visit_note}</p><a href={p.source_url} target="_blank" rel="noreferrer">Source information ↗</a>{p.coordinate_source_url && <a className="walk-place-source" href={p.coordinate_source_url} target="_blank" rel="noreferrer">Map record ↗</a>}</article>)}</div></details>)}</section>
     <footer className="walk-footer">Coffee Club · A small reason to get outside.<span>AI writes the itinerary. You decide if it is worth the walk.</span></footer>
   </main>;
 }
