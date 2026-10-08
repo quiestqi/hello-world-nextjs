@@ -8,7 +8,7 @@ export function GenerateForm({ ready, counts }: { ready: boolean; counts: Record
   const [area, setArea] = useState<string>(neighborhoods[0]);
   const [mood, setMood] = useState<string>(moods[0]);
   const [duration, setDuration] = useState("90");
-  return <form action={action} className="walk-form">
+  return <form action={action} onReset={event=>event.preventDefault()} className="walk-form">
     <label>Your area<select name="neighborhood" value={area} onChange={e=>setArea(e.target.value)}>{neighborhoods.map(n => <option key={n}>{n}</option>)}</select></label>
     <p className="walk-small">{counts[area] ?? 0} sourced places in this area</p>
     <label>Your mood<select name="mood" value={mood} onChange={e=>setMood(e.target.value)}>{moods.map(m => <option key={m}>{m}</option>)}</select></label>
