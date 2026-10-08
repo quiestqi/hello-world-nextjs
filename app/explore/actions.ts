@@ -12,7 +12,8 @@ export async function generateWalk(_previous: Result, form: FormData): Promise<R
   const mood = String(form.get("mood") ?? "");
   const duration = Number(form.get("duration"));
   if (!moods.some(m => m === mood) || ![60,90,120].includes(duration)) return { error: "Choose a mood and outing length." };
-  if (!process.env.GEMINI_API_KEY) return { error: "AI generation is being set up. Please try again later." };
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return { error: "AI generation is being set up. Please try again later." };
   const { data, error } = await supabase.from("places").select("id,name,kind,address,description,visit_note,source_url");
   if (error || !data?.length) return { error: "Unable to load the place catalogue. Please try again." };
   const date = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
@@ -20,10 +21,10 @@ export async function generateWalk(_previous: Result, form: FormData): Promise<R
   const { data: attempt, error: quotaError } = await supabase.rpc("reserve_generation");
   if (quotaError || !attempt) return { error: quotaError?.message.includes("Daily generation") ? "You've used your five attempts for the last 24 hours. Come back tomorrow." : "Unable to start a generation. Please try again." };
   const prompt = buildPrompt(places, mood, duration);
-  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
+  let model = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
-      method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY },
+    const requestModel = (name: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(name)}:generateContent`, {
+      method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: {
         responseMimeType: "application/json", maxOutputTokens: 4096,
         responseSchema: { type: "OBJECT", properties: {
@@ -31,8 +32,29 @@ export async function generateWalk(_previous: Result, form: FormData): Promise<R
             place_id: { type: "STRING", enum: places.map(p => p.id) }, reason: { type: "STRING" }, activity: { type: "STRING" }, minutes: { type: "INTEGER" }
           }, required: ["place_id","reason","activity","minutes"] } }
         }, required: ["title","summary","stops"] }
-      } }), signal: AbortSignal.timeout(45000), cache: "no-store"
+      } }), signal: AbortSignal.timeout(30000), cache: "no-store"
     });
+    let response = await requestModel(model);
+    if ([404,503].includes(response.status) && !process.env.GEMINI_MODEL) {
+      // Model availability can vary by key. Discover supported text models instead of guessing IDs.
+      const catalogue = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", {
+        headers: { "x-goog-api-key": apiKey }, signal: AbortSignal.timeout(10000), cache: "no-store"
+      });
+      if (catalogue.ok) {
+        const { models = [] } = await catalogue.json();
+        const alternatives = models.filter((m: { name: string; supportedGenerationMethods?: string[] }) =>
+          m.supportedGenerationMethods?.includes("generateContent") && /^models\/gemini-.*flash/.test(m.name) &&
+          !/image|audio|tts|live|embedding|cyber/.test(m.name) && m.name !== `models/${model}`
+        ).map((m: { name: string }) => m.name.replace("models/", "")) as string[];
+        alternatives.sort((a,b) => Number(b.includes("lite"))-Number(a.includes("lite")) || b.localeCompare(a, undefined, { numeric: true }));
+        console.info("coffee-walk available fallback models", { models: alternatives.slice(0,5) });
+        for (const alternative of alternatives.slice(0,2)) {
+          model = alternative;
+          response = await requestModel(model);
+          if (![404,503].includes(response.status)) break;
+        }
+      }
+    }
     if (!response.ok) {
       // Log codes only: provider bodies may contain credentials or request data.
       console.error("coffee-walk model request", { model, status: response.status });
