@@ -1,14 +1,18 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { generateWalk, voteOnWalk } from "./actions";
 import { moods, neighborhoods } from "@/lib/routes";
 
 export function GenerateForm({ ready, counts }: { ready: boolean; counts: Record<string, number> }) {
   const [state, action, pending] = useActionState(generateWalk, {});
+  const [area, setArea] = useState<string>(neighborhoods[0]);
+  const [mood, setMood] = useState<string>(moods[0]);
+  const [duration, setDuration] = useState("90");
   return <form action={action} className="walk-form">
-    <label>Your area<select name="neighborhood">{neighborhoods.map(n => <option key={n}>{n}</option>)}</select><span className="walk-small">{neighborhoods.map(n => `${n}: ${counts[n] ?? 0} places`).join(" · ")}</span></label>
-    <label>Your mood<select name="mood">{moods.map(m => <option key={m}>{m}</option>)}</select></label>
-    <label>Time to explore<select name="duration" defaultValue="90"><option value="60">One hour</option><option value="90">An hour and a half</option><option value="120">Two hours</option></select></label>
+    <label>Your area<select name="neighborhood" value={area} onChange={e=>setArea(e.target.value)}>{neighborhoods.map(n => <option key={n}>{n}</option>)}</select></label>
+    <p className="walk-small">{counts[area] ?? 0} sourced places in this area</p>
+    <label>Your mood<select name="mood" value={mood} onChange={e=>setMood(e.target.value)}>{moods.map(m => <option key={m}>{m}</option>)}</select></label>
+    <label>Time to explore<select name="duration" value={duration} onChange={e=>setDuration(e.target.value)}><option value="60">One hour</option><option value="90">An hour and a half</option><option value="120">Two hours</option></select></label>
     <button className="walk-button" disabled={!ready || pending}>{pending ? "Creating your walk…" : "Generate my coffee walk →"}</button>
     <p className="walk-small">A different coffee start from your last walk in this area. Up to five attempts per 24 hours. Mostly free stops; no purchase required.</p>
     {!ready && <p role="status">AI generation is being set up. Explore our places below in the meantime.</p>}
