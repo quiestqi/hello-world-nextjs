@@ -20,7 +20,7 @@ export async function generateWalk(_previous: Result, form: FormData): Promise<R
   const { data: attempt, error: quotaError } = await supabase.rpc("reserve_generation");
   if (quotaError || !attempt) return { error: quotaError?.message.includes("Daily generation") ? "You've used your five attempts for the last 24 hours. Come back tomorrow." : "Unable to start a generation. Please try again." };
   const prompt = buildPrompt(places, mood, duration);
-  const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
   try {
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
       method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY },
@@ -37,6 +37,7 @@ export async function generateWalk(_previous: Result, form: FormData): Promise<R
       // Log codes only: provider bodies may contain credentials or request data.
       console.error("coffee-walk model request", { model, status: response.status });
       if (response.status === 429) return { error: "AI generation is at its usage limit. Please try again later." };
+      if (response.status === 503) return { error: "The AI service is temporarily busy. Please try again in a moment." };
       if (response.status === 404) return { error: "The configured AI model is unavailable. Please contact the site owner." };
       if (response.status === 400 || response.status === 403) return { error: "The AI service configuration needs attention. Please contact the site owner." };
       throw new Error("Model request failed");
