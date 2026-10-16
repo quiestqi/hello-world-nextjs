@@ -1,3 +1,4 @@
+import { Localized, LanguageSwitch } from "@/app/i18n/locale-provider";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -21,18 +22,17 @@ export default async function MembersPage() {
     .single();
 
   if (error) {
-    return <main style={{ padding: 40 }}>Unable to load your profile. Please try again later.</main>;
+    return (<Localized><main style={{ padding: 40 }}>Unable to load your profile. Please try again later.</main></Localized>);
   }
 
   if (!profile.first_name?.trim() || !profile.last_name?.trim()) {
     redirect("/profile");
   }
 
-  return (
-    <main style={{ padding: 40 }}>
-      <h1>Welcome to Coffee Club, {profile.first_name}!</h1>
+  return (<Localized><main style={{ padding: 40 }}>
+      <LanguageSwitch /><h1>Welcome to STAGED CITY, {profile.first_name}!</h1>
       <p>This page is only available to signed-in members.</p>
-      <Link href="/">Browse coffees</Link>
+      <Link href="/">Explore the city</Link>
 
       <Link
         href="/profile"
@@ -45,7 +45,7 @@ export default async function MembersPage() {
     type="submit"
     style={{
       padding: "12px 20px",
-      background: "#30563b",
+      background: "#111111",
       color: "white",
       borderRadius: 8,
     }}
@@ -53,6 +53,5 @@ export default async function MembersPage() {
     Sign out
   </button>
 </form>
-    </main>
-  );
+    </main></Localized>);
 }

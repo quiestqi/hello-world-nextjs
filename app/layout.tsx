@@ -1,29 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import "./manuscript.css";
+import CursorFlock from "./components/cursor-flock";
+import { LocaleProvider } from "./i18n/locale-provider";
+import { getLocale } from "./i18n/locale-server";
 
 export const metadata: Metadata = {
-  title: "Coffee Club",
-  description: "Explore coffees, join Coffee Club, and manage your profile.",
+  title: "STAGED CITY — Read the city, write your journey",
+  description: "Start from Hugo's Notre-Dame de Paris, follow the characters' footsteps, and explore Paris.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const locale = await getLocale();
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang={locale === "zh" ? "zh-CN" : "en"} className="h-full antialiased">
+      <body className="min-h-full flex flex-col"><LocaleProvider locale={locale}>{children}<CursorFlock /></LocaleProvider></body>
     </html>
   );
 }

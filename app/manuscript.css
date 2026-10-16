@@ -1,0 +1,181 @@
+@font-face{font-family:'Staged Blackletter';src:url('/fonts/UnifrakturMaguntia-Book.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+:root{--vellum:#eee5ce;--vellum-light:#f8f1df;--manuscript-ink:#342e25;--rubric:#833f35;--old-gold:#a38a54;--manuscript-rule:#c7b995;--gothic:'Staged Blackletter','Kaiti SC','STKaiti','KaiTi','Songti SC',serif;--reading:Georgia,'Songti SC','Noto Serif CJK SC',serif;--paper-grain:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.06' filter='url(%23n)'/%3E%3C/svg%3E")}
+html body{background:var(--vellum);color:var(--manuscript-ink);font-family:var(--reading)}
+body .paris-app{--paper:var(--vellum-light);--ink:var(--manuscript-ink);--muted:#80745f;--red:var(--rubric);--line:var(--manuscript-rule);--serif:var(--reading);background-color:var(--vellum-light);background-image:var(--paper-grain),radial-gradient(ellipse at 50% 0,#fffaf0 0,transparent 70%);font-family:var(--reading);color:var(--manuscript-ink)}
+body .paris-app h1,body .paris-app h2,body .paris-app h3,body .paris-app h4,body .walks-app h1,body .walks-app h2{font-family:var(--gothic);font-weight:400;letter-spacing:.1px;color:var(--manuscript-ink)}
+body .paris-app h1 em,body .paris-app h2 em{font-family:inherit;font-style:normal;color:var(--rubric)}
+body .paris-app .paris-header{background-color:#f4ecd8;background-image:var(--paper-grain);border-bottom:3px double #b4a37c;box-shadow:0 2px 10px #51401b0c}
+body .paris-app .paris-brand{font-family:var(--gothic);font-size:26px;letter-spacing:.7px;color:#48382b;line-height:1}
+body .paris-app .paris-brand small{font-family:'Courier New','Songti SC',monospace;font-size:7px;letter-spacing:2px;color:#8d7b5c;margin-top:8px}
+body .paris-app .brand-mark{font-family:var(--gothic);color:var(--rubric);border-color:var(--old-gold);font-size:33px}
+body .paris-app .paris-tabs{font-family:var(--reading);letter-spacing:.5px}
+body .paris-app .paris-tabs a{color:#685a44;font-size:11px;text-decoration:none}
+body .paris-app .paris-tabs a:hover{color:var(--rubric);text-decoration:underline;text-underline-offset:6px}
+body .paris-app .eyebrow{font-family:'Courier New','Songti SC',monospace;color:#99805a;font-size:9px;letter-spacing:1.4px}
+body .paris-sidebar,body .paris-detail,body .map-caption{background-color:var(--vellum-light);background-image:var(--paper-grain)}
+body .paris-sidebar{border-right:3px double var(--manuscript-rule)}
+body .paris-detail{border-left:3px double var(--manuscript-rule)}
+body .paris-app .sidebar-intro h1{font-size:37px;line-height:1.18;letter-spacing:.2px}
+body .paris-app .sidebar-intro{padding-top:30px}
+body .paris-app .intro-text{line-height:1.8;color:#8a7a61}
+body .paris-app .work-cover{background-color:#e9ddbc;background-image:var(--paper-grain);border:1px solid #c8b78b;outline:1px solid #c8b78b;outline-offset:-5px;min-height:146px;padding-top:24px;padding-bottom:20px}
+body .paris-app .work-cover h2{font-size:26px;line-height:1.05;letter-spacing:0;color:#664332;max-width:170px}
+body .paris-app .work-cover p{font-family:var(--reading);color:#7f7258}
+body .paris-app .cathedral-drawing{color:#8f734c;opacity:.43}
+body .paris-app .perspective-switch{background:#e9dfc8;border:1px solid #d4c49f;border-radius:0}
+body .paris-app .perspective-switch button.active{background:#f8f0dc;color:var(--rubric)}
+body .paris-app .place-row.selected{background:#e8dcc0;border-left-color:var(--rubric)}
+body .paris-app .place-row:hover{background:#ede2c9}
+body .paris-app .place-row-copy strong{font-family:var(--reading)}
+body .paris-app .place-row-copy small{color:#9b8b70}
+body .paris-app .place-number,body .paris-app .bookmark-icon,body .paris-app .detail-french,body .paris-app .scene-chapter,body .paris-app .scene-entry a,body .paris-app .today-location a{color:var(--rubric)}
+body .paris-app .detail-french{font-size:14px}
+body .paris-app .paris-detail>h2{font-size:33px;line-height:1.25;margin-bottom:18px}
+body .paris-app .section-title h3{font-size:20px}
+body .paris-app .character-chips>span,body .paris-app .character-chips>span.poet-chip{background:#eee2c7;border-color:#d6c49c;color:#725e43;border-radius:0}
+body .paris-app .today-location{background:#ece0c3;border-top:1px solid #cbbb93;border-bottom:1px solid #cbbb93}
+body .paris-app .paris-map-canvas .leaflet-tile-pane,body .paris-app .journey-map-canvas .leaflet-tile-pane{filter:grayscale(.75) sepia(.35) saturate(.6) brightness(1.02) contrast(.88)}
+body .paris-app .map-top-label,body .paris-app .map-bottom-label,body .paris-app .map-reset{background:#f8f0deed;border:1px solid #c5b58e;color:#74644b;box-shadow:0 2px 8px #44341d14}
+body .paris-app .map-top-label{border:3px double #c5b58e}
+body .paris-app .map-coordinates{font-family:var(--reading)}
+body .paris-app .paris-map-pin{background:#f7edda;color:var(--rubric);border-color:#935b45}
+body .paris-app .paris-map-pin.is-active{background:var(--rubric);color:#fff4d9;outline-color:#833f3520}
+body .paris-app .journey-page{position:relative;max-width:1230px}
+body .paris-app .journey-start,body .paris-app .journey-results-intro{background:transparent}
+body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1{font-size:clamp(42px,4.7vw,67px);line-height:1.1}
+body .paris-app .journey-hero p,body .paris-app .journey-results-intro>p{color:#8d7a60;line-height:1.9}
+body .paris-app .journey-start{border-top:3px double #cbbb93;border-bottom:3px double #cbbb93}
+body .paris-app .journey-perspectives legend{font-family:var(--gothic);font-size:31px;color:#59432f}
+body .paris-app .journey-perspectives label{background:#f7efdd;border-color:#d1bf95;border-radius:0}
+body .paris-app .journey-perspectives label.selected{background:#eaddbd;border-color:var(--rubric);box-shadow:inset 0 3px var(--rubric)}
+body .paris-app .journey-perspectives strong{font-family:var(--gothic);font-size:25px;line-height:1.15;color:#553c2d;font-weight:400}
+body .paris-app .journey-perspectives small{color:var(--rubric);margin-top:11px}
+body .paris-app .journey-perspectives em{font-family:var(--reading);font-size:11px;color:#8c795d}
+body .paris-app .journey-preferences{background:#e9ddc3;border:1px solid #cebb93;outline:1px solid #d6c7a3;outline-offset:-6px}
+body .paris-app .journey-form select,body .paris-app .journey-wish textarea,body .paris-app .interest-options label{background:#f9f1df;border-color:#c7b58f;color:#51412f}
+body .paris-app .journey-form select,body .paris-app .journey-wish textarea{font-family:var(--reading)}
+body .paris-app .interest-options label:has(input:checked){background:#e6d5b0;border-color:var(--rubric)}
+body .paris-app .journey-primary{background:var(--rubric);color:#fff5de;border:1px solid #6c302a;border-radius:0;box-shadow:inset 0 0 0 3px #ffffff12;font-family:var(--reading)}
+body .paris-app .journey-primary[aria-pressed=true]{background:#eadbbd;color:var(--rubric);border-color:var(--rubric)}
+body .paris-app .journey-section-heading h2{font-size:34px}
+body .paris-app .journey-card{background:#f9f1df;border:1px solid #c9b78e;border-radius:0;box-shadow:0 3px 0 #daceaf55}
+body .paris-app .journey-route-summary h3{font-size:29px;color:#4c3526;line-height:1.15}
+body .paris-app .journey-route-summary:hover{background:#efe1c2}
+body .paris-app .journey-perspective-tag,body .paris-app .journey-route-summary .journey-perspective-tag{background:#e9dbb9;color:#846345;border:1px solid #d5c198;border-radius:0;font-size:9px;font-family:var(--reading)}
+body .paris-app .journey-poetry{border-left-color:var(--rubric)}
+body .paris-app .journey-poetry .poetry-text{font-family:var(--reading);font-size:19px;line-height:1.95;color:#554533}
+body .paris-app .poetry-text:first-letter{font-family:var(--gothic);font-size:2.8em;float:left;line-height:.9;margin:5px 8px 0 0;color:var(--rubric)}
+body .paris-app .journey-card h4{font-size:25px}
+body .paris-app .journey-map{background:#f4e9d0;border-color:#ccb98d}
+body .paris-app .journey-map-label{background:#f7edd8;color:#695236;border-color:#bba171}
+body .paris-app .journey-rating button{border-color:#c4af83;color:#7e4935}
+body .paris-app .journey-rating button[aria-pressed=true]{background:#e5d4af;border-color:var(--rubric)}
+body .paris-app .journey-replan,body .paris-app .journey-directions{color:var(--rubric)}
+body .paris-app .profile-intro h1{font-size:clamp(36px,4vw,58px);line-height:1.15}
+body .paris-app .profile-section h2,body .paris-app .profile-departure h2{font-size:30px}
+body .paris-app .reader-pass,body .paris-app .profile-section,body .paris-app .profile-departure{background:#f3e7cb;border-color:#c5af81}
+body .paris-app .reader-pass{outline:1px solid #cdbb92;outline-offset:-7px}
+body .paris-app .reader-pass h2{font-size:35px;color:var(--rubric)}
+body .paris-app .profile-form input{background:#fbf4e4;border-color:#cbbb95;font-family:var(--reading)}
+body .paris-app .echo-atlas{background:#e3d7b7}
+body .paris-app .echo-atlas-heading h1{font-family:var(--gothic);font-size:37px;font-style:normal;color:#6b3d2e}
+body .paris-app .echo-atlas-heading:before{background:radial-gradient(ellipse at top left,#f8efd8f5 30%,#f8efd8aa 55%,#f8efd800 75%)}
+body .paris-app .echo-atlas-heading p{color:#8c7655}
+body .paris-app .echo-notebook-link,body .paris-app .echo-atlas-footnote{background:#f7edd7ed;border-color:#c7b68c;color:#796346}
+body .paris-app .echo-atlas .leaflet-popup-content-wrapper,body .paris-app .echo-atlas .leaflet-popup-tip{background:#f9efd8;border-color:#c7b186}
+body .paris-app .echo-pin-editor textarea{font-family:var(--reading);color:#54422e;border-bottom-color:#d1be96}
+body .paris-app .echo-place-button{color:var(--rubric);border-color:#ad835e;font-family:var(--reading)}
+body .paris-app .echo-bubble{font-family:var(--reading)}
+body .paris-app .echo-atlas .echo-pin span{background:#f5e6c7;color:var(--rubric);border-color:#9a694d}
+body .paris-app .language-switch{background:#f8efdc!important;border-color:#c9b78e!important;color:#7e6345!important}
+body .theatre-login{background-color:var(--vellum-light);background-image:var(--paper-grain),radial-gradient(ellipse at center,#fff8e8,transparent 70%);color:var(--manuscript-ink);font-family:var(--reading)}
+body .theatre-login .theatre-wordmark{font-family:var(--gothic);font-size:30px;letter-spacing:1px;color:var(--rubric)}
+body .theatre-login .theatre-wordmark span{font-family:'Courier New',monospace;font-size:8px}
+body .theatre-login .theatre-stage h1{font-family:var(--gothic);font-weight:400;letter-spacing:0;font-size:clamp(76px,12vw,152px);line-height:.88;color:#693c2c;text-shadow:1px 1px 0 #cbb58e}
+body .theatre-login .theatre-stage h1 span{color:var(--rubric)}
+body .theatre-login .type-cursor{display:none}
+body .theatre-login .theatre-ticket{background:#f2e3c2;border-color:#b99d6c;outline:1px solid #c3ab7b;outline-offset:5px}
+body .theatre-login .login-primary{background:var(--rubric);color:#fff1d5;border-color:#74332b;font-family:var(--reading)}
+body .theatre-login .theatre-curtain{background-color:#e8d6ad;background-image:repeating-linear-gradient(90deg,#b8a07618 0,transparent 8%,#fff5df55 15%,transparent 23%);border-color:#bd9f6b}
+body .theatre-login .theatre-invitation{font-family:var(--reading);font-style:italic;color:#7b5d3b}
+body .theatre-login .stage-rail,body .theatre-login .theatre-masthead,body .theatre-login .theatre-footer{border-color:#bda579}
+.cursor-flock{position:fixed;inset:0;z-index:2147483000;pointer-events:none;overflow:hidden;opacity:0;contain:strict;color:#8b4836}
+.cursor-bird{position:absolute;left:0;top:0;width:18px;height:18px;transform-origin:0 0;will-change:transform;opacity:.64}
+.cursor-bird svg{width:100%;height:100%;transform:translate(-50%,-50%)}
+.cursor-bird:nth-child(3n){color:#ad8a43;opacity:.55}.cursor-bird:nth-child(3n+1){color:#654b32;opacity:.5}
+@media(prefers-reduced-motion:reduce),(pointer:coarse){.cursor-flock{display:none}}
+@media(max-width:750px){body .paris-app .paris-brand{font-size:23px}body .paris-app .sidebar-intro h1{font-size:33px}body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1{font-size:42px}body .paris-app .journey-perspectives strong{font-size:23px}body .paris-app .journey-route-summary h3{font-size:25px}body .paris-app .echo-atlas-heading h1{font-size:28px}body .paris-app .paris-detail>h2{font-size:30px}body .paris-app .paris-header{padding-left:20px;padding-right:20px}}
+body .walk-app{--ink:var(--manuscript-ink);--muted:#88765c;--cream:var(--vellum-light);--accent:#bd9c5e;background-image:var(--paper-grain);font-family:var(--reading)}
+body .walk-app h1,body .walk-app h2,body .walk-app h3,body .walk-app h4,body .walk-app .walk-brand{font-family:var(--gothic);font-weight:400;letter-spacing:.2px}
+body .walk-app .walk-generator,body .walk-app .walk-card,body .walk-app .walk-places article{background:#f1e5ca;border-color:#c6b38b;border-radius:0}
+body .walk-app .walk-form select{background:#fbf2df;border-color:#c7b68f;font-family:var(--reading)}
+body .walk-app .walk-button,body .paris-app .profile-submit{background:var(--rubric);color:#fff2d6;border-color:#7c3a30;border-radius:0;font-family:var(--reading)}
+body .paris-app .profile-submit.secondary{background:transparent;color:var(--rubric)}
+body .paris-app .profile-intro,body .paris-app .profile-footer,body .paris-app .profile-section-title,body .paris-app .reader-pass-stub{border-color:#c6b187}
+body .theatre-login .theatre-stage h1>span:not(.type-cursor){letter-spacing:0;padding-left:0}
+
+/* A readable Gothic: clear letterforms, restrained weights and an uncluttered book card. */
+body .paris-app h1,body .paris-app h2,body .paris-app h3,body .paris-app h4{font-weight:500}
+body .paris-app .paris-brand{font-size:26px;letter-spacing:1.1px;font-weight:500}
+body .paris-app .work-cover{min-height:122px;padding:22px 19px}
+body .paris-app .work-cover h2{max-width:none;font-size:29px;line-height:1.1}
+body .paris-app .work-cover>div{width:100%}
+body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1{font-weight:500;line-height:1.15}
+body .paris-app .journey-perspectives strong{font-size:26px;font-weight:500}
+body .theatre-login .theatre-stage h1{font-weight:500}
+
+/* Almendra: a lighter manuscript hand between ornate blackletter and a formal serif. */
+body .paris-app h1,body .paris-app h2,body .paris-app h3,body .paris-app h4,body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1,body .paris-app .journey-perspectives strong,body .theatre-login .theatre-stage h1{font-weight:400;font-synthesis:none}
+body .paris-app .paris-brand{font-size:24px;font-weight:400;letter-spacing:1.6px}
+body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1{font-size:clamp(39px,4.2vw,59px);line-height:1.16}
+body .paris-app .journey-perspectives strong{font-size:24px;line-height:1.3}
+body .paris-app .journey-perspectives legend{font-size:28px}
+body .paris-app .journey-route-summary h3{font-size:26px;line-height:1.25}
+body .paris-app .sidebar-intro h1{font-size:34px;line-height:1.25}
+body .paris-app .echo-atlas-heading h1{font-size:34px}
+body .paris-app .brand-mark{font-size:31px}
+@media(max-width:750px){body .paris-app .paris-brand{font-size:21px}body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1{font-size:39px}body .paris-app .echo-atlas-heading h1{font-size:27px}}
+
+/* Restore the first, ornate Gothic face at the user's request. */
+body .paris-app .paris-brand{font-size:26px;letter-spacing:.7px;font-weight:400}
+body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1{font-size:clamp(42px,4.7vw,67px);line-height:1.1}
+body .paris-app .journey-perspectives strong{font-size:25px;line-height:1.15}
+body .paris-app .journey-perspectives legend{font-size:31px}
+body .paris-app .journey-route-summary h3{font-size:29px;line-height:1.15}
+body .paris-app .sidebar-intro h1{font-size:37px;line-height:1.18}
+body .paris-app .echo-atlas-heading h1{font-size:37px}
+@media(max-width:750px){body .paris-app .paris-brand{font-size:23px}body .paris-app .sidebar-intro h1{font-size:33px}body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1{font-size:42px}body .paris-app .echo-atlas-heading h1{font-size:28px}}
+/* White paper, black ink — keep the first Gothic face and motion. */
+:root{--vellum:#fff;--vellum-light:#fff;--manuscript-ink:#111;--rubric:#111;--old-gold:#777;--manuscript-rule:#d5d5d5;--paper-grain:none}
+html body,body .paris-app,body .theatre-login,body .walk-app{background:#fff;color:#111}
+body .paris-app{--paper:#fff;--ink:#111;--red:#111;--muted:#777;--line:#ddd}
+body .paris-app .paris-header,body .paris-sidebar,body .paris-detail,body .map-caption,body .paris-app .work-cover,body .paris-app .journey-card,body .paris-app .reader-pass,body .paris-app .profile-section,body .paris-app .profile-departure,body .theatre-login .theatre-ticket,body .walk-app .walk-generator,body .walk-app .walk-card,body .walk-app .walk-places article{background:#fff;border-color:#d3d3d3;outline-color:#ddd;box-shadow:none}
+body .paris-app .journey-preferences,body .paris-app .perspective-switch,body .paris-app .today-location{background:#f6f6f6;border-color:#ddd;outline-color:#ddd}
+body .paris-app .journey-perspectives label,body .paris-app .journey-form select,body .paris-app .journey-wish textarea,body .paris-app .interest-options label,body .paris-app .profile-form input,body .walk-app .walk-form select{background:#fff;border-color:#ccc;color:#111}
+body .paris-app .journey-perspectives label.selected,body .paris-app .interest-options label:has(input:checked),body .paris-app .place-row.selected{background:#f1f1f1;border-color:#111;box-shadow:none}
+body .paris-app .place-row:hover,body .paris-app .journey-route-summary:hover{background:#f7f7f7}
+body .paris-app .paris-brand,body .paris-app .brand-mark,body .paris-app h1,body .paris-app h2,body .paris-app h3,body .paris-app h4,body .paris-app h1 em,body .paris-app .journey-perspectives strong,body .paris-app .journey-perspectives small,body .paris-app .journey-perspectives legend,body .paris-app .work-cover h2,body .paris-app .reader-pass h2,body .paris-app .echo-atlas-heading h1,body .paris-app .paris-tabs a,body .theatre-login .theatre-wordmark,body .theatre-login .theatre-stage h1,body .theatre-login .theatre-stage h1 span{color:#111;text-shadow:none}
+body .paris-app .eyebrow,body .paris-app .paris-brand small,body .paris-app .intro-text,body .paris-app .journey-hero p,body .paris-app .journey-results-intro>p,body .paris-app .work-cover p,body .paris-app .journey-perspectives em,body .paris-app .place-row-copy small,body .paris-app .echo-atlas-heading p,body .theatre-login .theatre-invitation{color:#707070}
+body .paris-app .journey-perspective-tag,body .paris-app .journey-route-summary .journey-perspective-tag,body .paris-app .character-chips>span,body .paris-app .character-chips>span.poet-chip{background:#f4f4f4;border-color:#ddd;color:#444}
+body .paris-app .journey-primary,body .paris-app .profile-submit,body .theatre-login .login-primary,body .walk-app .walk-button{background:#111;color:#fff;border-color:#111;box-shadow:none}
+body .paris-app .journey-primary[aria-pressed=true],body .paris-app .profile-submit.secondary{background:#fff;color:#111;border-color:#111}
+body .paris-app .journey-poetry .poetry-text,body .paris-app .poetry-text:first-letter,body .paris-app .journey-card h4,body .paris-app .place-number,body .paris-app .bookmark-icon,body .paris-app .detail-french,body .paris-app .scene-chapter,body .paris-app .scene-entry a,body .paris-app .today-location a,body .paris-app .journey-replan,body .paris-app .journey-directions{color:#111}
+body .paris-app .journey-rating button{border-color:#ccc;color:#111}body .paris-app .journey-rating button[aria-pressed=true]{background:#eee;border-color:#111}
+body .paris-app .map-top-label,body .paris-app .map-bottom-label,body .paris-app .map-reset,body .paris-app .echo-notebook-link,body .paris-app .echo-atlas-footnote,body .paris-app .echo-atlas .leaflet-popup-content-wrapper,body .paris-app .echo-atlas .leaflet-popup-tip{background:#fffffff0;color:#333;border-color:#ccc}
+body .paris-app .echo-pin-editor textarea,body .paris-app .echo-place-button{color:#111;border-color:#ccc}
+body .paris-app .echo-atlas-heading:before{background:radial-gradient(ellipse at top left,#fffffff5 30%,#ffffffaa 55%,#ffffff00 75%)}
+body .paris-app .language-switch{background:#fff!important;color:#111!important;border-color:#ccc!important}
+body .theatre-login .theatre-curtain{background-color:#fff;background-image:repeating-linear-gradient(90deg,#fff 0,#fff 55px,#f4f4f4 56px,#fff 58px);border-color:#ddd}
+.cursor-flock,.cursor-bird:nth-child(3n),.cursor-bird:nth-child(3n+1){color:#111}
+.generation-ready{border:1px solid #111;background:#fff;padding:15px 20px;font:13px/1.7 Georgia,'Songti SC',serif;margin:0 0 28px;color:#111}.generation-progress{display:flex;gap:10px;align-items:center;color:#111!important;font:12px/1.7 Georgia,'Songti SC',serif}.generation-progress>span{width:13px;height:13px;flex-shrink:0;border:1px solid #ccc;border-top-color:#111;border-radius:50%;animation:generation-turn 1s linear infinite}@keyframes generation-turn{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.generation-progress>span{animation:none}}
+/* Gothic headings, typewriter text everywhere else. */
+:root{--reading:'Courier New','Noto Sans Mono CJK SC','PingFang SC',monospace;--typewriter:'Courier New','Noto Sans Mono CJK SC','PingFang SC',monospace}
+html body,body .paris-app,body .walk-app,body .theatre-login{font-family:var(--typewriter)}
+body .paris-app :is(p,a,label,input,textarea,select,button,legend,small,summary,li,pre),body .walk-app :is(p,a,label,input,textarea,select,button,small,summary,li,pre),body .theatre-login :is(p,a,label,input,textarea,select,button,small){font-family:var(--typewriter)}
+body .paris-app :is(h1,h2,h3,h4),body .walk-app :is(h1,h2,h3,h4),body .paris-app .paris-brand,body .paris-app .brand-mark,body .paris-app .journey-perspectives strong,body .paris-app .journey-perspectives legend,body .theatre-login .theatre-wordmark,body .theatre-login .theatre-stage h1{font-family:var(--gothic)}
+body .paris-app .paris-brand small,body .theatre-login .theatre-wordmark span{font-family:var(--typewriter)}
+body .paris-app :is(.detail-french,.place-row-copy small,.scene-chapter,.scene-chapter span,.map-coordinates,.map-caption p,.character-chips,.detail-tags,.book-label,.edition-label,.journey-map-label,.journey-map-pin,.paris-map-pin,.echo-bubble,.echo-pin-editor,.echo-share,.map-top-label,.map-bottom-label,.echo-atlas-footnote,.paris-account,.paris-tabs,.sidebar-footer,.reader-pass-heading,.reader-pass-stub,.reader-status,.profile-file-mark,.generation-ready,.generation-progress){font-family:var(--typewriter)}
+body .paris-app .journey-poetry .poetry-text{font-family:var(--typewriter)}
+body .paris-app .poetry-text:first-letter{font-family:var(--gothic)}
+body .paris-app .leaflet-container,body .paris-app .leaflet-tooltip,body .paris-app .leaflet-popup-content,body .walk-app .leaflet-container{font-family:var(--typewriter)}
+body .paris-app .journey-route-summary h3,body .paris-app .echo-atlas-heading h1{font-family:var(--gothic)}

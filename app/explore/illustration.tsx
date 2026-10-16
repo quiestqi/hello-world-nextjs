@@ -1,5 +1,6 @@
 "use client";
 
+import { Localized } from "@/app/i18n/locale-provider";
 import Image from "next/image";
 import type { Place } from "@/lib/routes";
 import type { MapDesign } from "@/lib/map-design";
@@ -9,7 +10,7 @@ import { generateIllustration } from "./illustration-action";
 
 export function Illustration({ id, title, url, status, design, stops }: { id: string; title: string; url?: string; status?: string; owner?: boolean; design?: MapDesign; stops: Place[] }) {
   const [result, action, pending] = useActionState(generateIllustration, {});
-  return <figure className="walk-illustration">
+  return (<Localized><figure className="walk-illustration">
     {design ? <IllustratedMap design={design} stops={stops} title={title} /> : url ? <Image unoptimized src={url} alt={`Gemini illustrated map of ${title}`} width={1024} height={1024} loading="lazy" /> : <form action={action} className="walk-illustration-placeholder">
       <input type="hidden" name="generation_id" value={id} />
       <h4>A little map of your day.</h4>
@@ -19,5 +20,5 @@ export function Illustration({ id, title, url, status, design, stops }: { id: st
       {result.success && <p role="status">{result.success}</p>}
     </form>}
     <figcaption>Design by Gemini · drawn by Coffee Club · schematic, not for navigation. Use the real map below for location details.</figcaption>
-  </figure>;
+  </figure></Localized>);
 }

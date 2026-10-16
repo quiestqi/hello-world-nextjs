@@ -1,0 +1,137 @@
+{
+  "notre-dame": {
+    "lat": 48.8529371,
+    "lng": 2.3500501,
+    "label": "Cathédrale Notre-Dame de Paris",
+    "display_name": "Cathédrale Notre-Dame de Paris, 6, Parvis Notre-Dame - Place Jean-Paul II, Quartier Les Îles, Paris 4e Arrondissement, Paris, Île-de-France, France métropolitaine, 75004, France",
+    "source_url": "https://www.openstreetmap.org/way/201611261",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "palais": {
+    "lat": 48.8559492,
+    "lng": 2.3460263,
+    "label": "Conciergerie",
+    "display_name": "Conciergerie, 2, Boulevard du Palais, Saint-Germain-l'Auxerrois, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",
+    "source_url": "https://www.openstreetmap.org/node/910390736",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "greve": {
+    "lat": 48.8564459,
+    "lng": 2.3508981,
+    "label": "Place de l'Hôtel de Ville",
+    "display_name": "Place de l'Hôtel de Ville, Quartier Saint-Merri, Paris 4e Arrondissement, Paris, Île-de-France, France métropolitaine, 75004, France",
+    "source_url": "https://www.openstreetmap.org/way/4476805",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "coutellerie": {
+    "lat": 48.857437,
+    "lng": 2.350693,
+    "label": "Rue de la Coutellerie",
+    "display_name": "Rue de la Coutellerie, Quartier Saint-Merri, Paris 4e Arrondissement, Paris, Île-de-France, France métropolitaine, 75004, France",
+    "source_url": "https://www.openstreetmap.org/way/681709632",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "bernardins": {
+    "lat": 48.8503818,
+    "lng": 2.3508317,
+    "label": "Rue des Bernardins",
+    "display_name": "Rue des Bernardins, Quartier Saint-Victor, Paris 5e Arrondissement, Paris, Île-de-France, France métropolitaine, 75005, France",
+    "source_url": "https://www.openstreetmap.org/way/72240223",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "harpe": {
+    "lat": 48.8516456,
+    "lng": 2.3438411,
+    "label": "Rue de la Harpe",
+    "display_name": "Rue de la Harpe, Quartier de la Sorbonne, Paris 5e Arrondissement, Paris, Île-de-France, France métropolitaine, 75005, France",
+    "source_url": "https://www.openstreetmap.org/way/19741176",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "huchette": {
+    "lat": 48.8529386,
+    "lng": 2.3458554,
+    "label": "Rue de la Huchette",
+    "display_name": "Rue de la Huchette, Quartier de la Sorbonne, Paris 5e Arrondissement, Paris, Île-de-France, France métropolitaine, 75005, France",
+    "source_url": "https://www.openstreetmap.org/way/1280700709",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "bastille": {
+    "lat": 48.8526733,
+    "lng": 2.3688193,
+    "label": "Place de la Bastille",
+    "display_name": "Place de la Bastille, Quartier de l'Arsenal, Paris 4e Arrondissement, Paris, Île-de-France, France métropolitaine, 75004, France",
+    "source_url": "https://www.openstreetmap.org/relation/10950251",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "saint-antoine": {
+    "lat": 48.8548965,
+    "lng": 2.3622299,
+    "label": "Rue Saint-Antoine",
+    "display_name": "Rue Saint-Antoine, Quartier Saint-Gervais, Paris 4e Arrondissement, Paris, Île-de-France, France métropolitaine, 75004, France",
+    "source_url": "https://www.openstreetmap.org/way/34678852",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "baudoyer": {
+    "lat": 48.8562241,
+    "lng": 2.3554469,
+    "label": "Place Baudoyer",
+    "display_name": "Place Baudoyer, Quartier Saint-Gervais, Paris 4e Arrondissement, Paris, Île-de-France, France métropolitaine, 75004, France",
+    "source_url": "https://www.openstreetmap.org/way/55647671",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "pont-saint-michel": {
+    "lat": 48.8540302,
+    "lng": 2.344573,
+    "label": "Pont Saint-Michel",
+    "display_name": "Pont Saint-Michel, Quai des Grands Augustins, Quartier de la Monnaie, Paris 6e Arrondissement, Paris, Île-de-France, France métropolitaine, 75006, France",
+    "source_url": "https://www.openstreetmap.org/way/78328158",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "pont-change": {
+    "lat": 48.8568488,
+    "lng": 2.3468871,
+    "label": "Pont au Change",
+    "display_name": "Pont au Change, Parc Rives de Seine - Georges Pompidou, Saint-Germain-l'Auxerrois, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",
+    "source_url": "https://www.openstreetmap.org/way/53582123",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "cite-west": {
+    "lat": 48.8574066,
+    "lng": 2.3403279,
+    "label": "Square du Vert Galant",
+    "display_name": "Square du Vert Galant, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",
+    "source_url": "https://www.openstreetmap.org/way/53570787",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "halles-alleys": {
+    "lat": 48.8606384,
+    "lng": 2.3480231,
+    "label": "Fontaine des Innocents",
+    "display_name": "Fontaine des Innocents, Place Joachim du Bellay, Quartier Les Halles, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",
+    "source_url": "https://www.openstreetmap.org/way/52469222",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  },
+  "grand-chatelet": {
+    "lat": 48.857524,
+    "lng": 2.3474629,
+    "label": "Place du Châtelet",
+    "display_name": "Place du Châtelet, Saint-Germain-l'Auxerrois, Paris 1er Arrondissement, Paris, Île-de-France, France métropolitaine, 75001, France",
+    "source_url": "https://www.openstreetmap.org/relation/7849856",
+    "retrieved_on": "2026-10-15",
+    "accuracy": "modern_reference_not_historical_scene_coordinate"
+  }
+}

@@ -1,13 +1,19 @@
+import { Localized, LanguageSwitch } from "@/app/i18n/locale-provider";
 import Link from "next/link";
+import { isAuthConfigured } from "@/lib/auth-config";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { saveProfile, uploadAvatar } from "./actions";
+import { ProfileSubmit } from "./profile-submit";
+import "@/app/paris/paris.css";
+import "./profile.css";
 
 export default async function ProfilePage({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string; saved?: string }>;
 }) {
+  if (!isAuthConfigured()) redirect("/login");
   const supabase = await createClient();
 
   const {
@@ -25,7 +31,7 @@ export default async function ProfilePage({
     .single();
 
   if (error) {
-    return <main style={{ padding: 40 }}>Unable to load your profile. Please try again later.</main>;
+    return <Localized><main className="paris-app profile-app"><div className="profile-page"><p className="eyebrow">YOUR READER’S FILE</p><h1>Data is temporarily closed.</h1><p>Please refresh later and continue your Paris story.</p><Link href="/profile">Reopen →</Link></div></main></Localized>;
   }
 
   let photoUrl: string | undefined;
@@ -44,141 +50,28 @@ export default async function ProfilePage({
 
   const errors: Record<string, string> = {
     missing: "Please enter your first and last name.",
-    length: "First and last names must each be 80 characters or fewer.",
-    save: "Unable to save your name. Please try again.",
-    photo: "Choose a JPG, PNG or WebP image up to 5 MB.",
-    upload: "Unable to save your photo. Please try again.",
+    length: "First and last name must not exceed 80 characters each.",
+    save: "Name not yet saved, please try again.",
+    photo: "Please select a JPG, PNG, or WebP image under 5 MB.",
+    upload: "Avatar not yet saved, please try again.",
   };
+  const displayName = [profile.first_name, profile.last_name].filter(Boolean).join(" ") || "A city wanderer";
+  const initials = [profile.first_name, profile.last_name].filter(Boolean).map(part => Array.from(part!.trim())[0]).join("").toUpperCase() || "SC";
 
-  const inputStyle = {
-    display: "block",
-    width: "100%",
-    border: "1px solid #999",
-    padding: 10,
-    marginTop: 8,
-  };
-
-  const buttonStyle = {
-    padding: 12,
-    background: "#30563b",
-    color: "white",
-    borderRadius: 8,
-  };
-
-  return (
-    <main style={{ padding: 40, maxWidth: 500 }}>
-      <h1>Profile</h1>
-      <nav aria-label="Profile navigation" style={{ display: "flex", gap: 20, margin: "20px 0" }}>
-        <Link href="/">Coffee list</Link>
-        <Link href="/members">Members</Link>
-      </nav>
-      <p>{user.email}</p>
-
-      {incomplete ? (
-        <p>Enter your first and last name, then save to view the coffee data. A profile photo is optional.</p>
-      ) : (
-        <section style={{ margin: "24px 0" }}>
-          <p>Your profile is ready. Continue to explore the coffee data.</p>
-          <Link href="/" style={{ ...buttonStyle, display: "inline-block", marginTop: 12 }}>
-            Enter Coffee List →
-          </Link>
-        </section>
-      )}
-
-      {params.saved === "1" && (
-        <p
-          role="status"
-          style={{ color: "#166534", background: "#dcfce7", padding: 12 }}
-        >
-          Saved successfully!
-        </p>
-      )}
-
-      {params.error && (
-        <p role="alert" style={{ color: "#b91c1c" }}>
-          {errors[params.error] ?? "Something went wrong. Please try again."}
-        </p>
-      )}
-
-      <form
-        action={saveProfile}
-        style={{ display: "grid", gap: 20, marginTop: 24 }}
-      >
-        <label>
-          First name
-          <input
-            name="first_name"
-            defaultValue={profile.first_name ?? ""}
-            required
-            maxLength={80}
-            autoComplete="given-name"
-            style={inputStyle}
-          />
-        </label>
-
-        <label>
-          Last name
-          <input
-            name="last_name"
-            defaultValue={profile.last_name ?? ""}
-            required
-            maxLength={80}
-            autoComplete="family-name"
-            style={inputStyle}
-          />
-        </label>
-
-        <button type="submit" style={buttonStyle}>
-          Save and enter Coffee List →
-        </button>
-      </form>
-
-      <section style={{ marginTop: 40 }}>
-        <h2>Profile photo (optional)</h2>
-        <p>You can add or change your photo anytime.</p>
-
-        {photoUrl && (
-          <picture>
-            <img
-              src={photoUrl}
-              alt="My profile photo"
-              width={120}
-              height={120}
-              style={{
-                borderRadius: "50%",
-                objectFit: "cover",
-                marginTop: 16,
-              }}
-            />
-          </picture>
-        )}
-
-        <form
-          action={uploadAvatar}
-          style={{ display: "grid", gap: 16, marginTop: 20 }}
-        >
-          <label>
-            Choose a photo (JPG, PNG or WebP, up to 5 MB)
-            <input
-              type="file"
-              name="photo"
-              accept="image/jpeg,image/png,image/webp"
-              required
-              style={inputStyle}
-            />
-          </label>
-
-          <button type="submit" style={buttonStyle}>
-            Upload photo
-          </button>
-        </form>
-      </section>
-
-      {!incomplete && (
-        <Link href="/" style={{ ...buttonStyle, display: "inline-block", marginTop: 24 }}>
-          Enter Coffee List →
-        </Link>
-      )}
-    </main>
-  );
+  return <Localized><main className="paris-app profile-app">
+    <header className="paris-header"><Link className="paris-brand" href="/"><span className="brand-mark">S<span>C</span></span><span>STAGED CITY<small>A CITY, READ DIFFERENTLY</small></span></Link><nav className="paris-tabs" aria-label="Main navigation"><Link href="/">Explore Map</Link><Link href="/journeys">Journeys</Link></nav><div className="paris-account"><LanguageSwitch /><span aria-current="page">Profile</span></div></header>
+    <div className="profile-page"><section className="profile-intro"><div><p className="eyebrow">THE READER / YOUR PERSONAL FILE</p><h1>The gaze within the story,<br /><span>Your very own name.</span></h1><p>Before entering another person&apos;s story, leave a small mark of your own.</p></div><span className="profile-file-mark" aria-hidden="true">PARIS<br />READER’S<br />ARCHIVE<br /><b>01 / IDENTITY</b></span></section>
+      <div className="profile-layout">
+        <aside className="reader-pass" aria-label="Wanderer profile card"><div className="reader-pass-heading"><span>STAGED CITY</span><span>ADMIT ONE</span></div><div className="reader-pass-content"><div className="reader-photo">{photoUrl ? <picture><img src={photoUrl} alt="Your avatar" width={160} height={160} /></picture> : <span aria-label="Initials">{initials}</span>}</div><p className="eyebrow">A READER IN THE CITY</p><h2>{displayName}</h2><p className="reader-email">{user.email}</p><div className="reader-status"><span aria-hidden="true">{incomplete ? "○" : "●"}</span>{incomplete ? "Complete your name to set off" : "Profile ready, set off anytime"}</div></div><div className="reader-pass-stub"><span>ONE READER.<br />COUNTLESS PERSPECTIVES.</span><span className="reader-stamp">PARIS<br />48°51′ N</span></div><p className="reader-pass-note">You may temporarily borrow the gaze of the characters,<br />Or remain entirely yourself.</p></aside>
+        <div className="profile-editor">
+          {params.saved === "1" && <p role="status" className="profile-message">✓ Avatar updated.</p>}
+          {params.error && <p role="alert" className="profile-message profile-error">{errors[params.error] ?? "Action could not be completed, please try again."}</p>}
+          <section className="profile-section"><div className="profile-section-title"><span>01</span><div><h2>What should we call you?</h2><p>This is your personal profile, you can edit it anytime.</p></div></div><form action={saveProfile} className="profile-form"><div className="profile-name-fields"><label htmlFor="profile-first">First name <small>FIRST NAME</small><input id="profile-first" name="first_name" defaultValue={profile.first_name ?? ""} required maxLength={80} autoComplete="given-name" /></label><label htmlFor="profile-last">Last name <small>LAST NAME</small><input id="profile-last" name="last_name" defaultValue={profile.last_name ?? ""} required maxLength={80} autoComplete="family-name" /></label></div><ProfileSubmit pendingText="Saving name…">Save name and step into Paris <span aria-hidden="true">→</span></ProfileSubmit></form></section>
+          <section className="profile-section"><div className="profile-section-title"><span>02</span><div><h2>Add a photo for this profile <small>Optional</small></h2><p>A familiar face, or a fragment of the city you love.</p></div></div><form action={uploadAvatar} className="profile-form profile-photo-form"><label htmlFor="profile-photo">Select Avatar<input id="profile-photo" type="file" name="photo" accept="image/jpeg,image/png,image/webp" required /><small className="profile-file-help">JPG / PNG / WEBP · Max 5 MB</small></label><ProfileSubmit secondary pendingText="Uploading avatar...">{photoUrl ? "Update Avatar" : "Upload Avatar"} <span aria-hidden="true">↗</span></ProfileSubmit></form></section>
+          <section className="profile-departure"><p className="eyebrow">THE CITY IS WAITING</p><h2>Next act, on the streets.</h2><div><Link href="/">Explore Paris map <span aria-hidden="true">↗</span></Link><Link href="/journeys">Select today&apos;s perspective <span aria-hidden="true">↗</span></Link><Link href="/journeys/routes">Browse saved routes <span aria-hidden="true">↗</span></Link></div></section>
+        </div>
+      </div>
+      <footer className="profile-footer"><span>YOUR NAME. YOUR PACE. YOUR PARIS.</span><Link href="/">← Back to the city</Link></footer>
+    </div>
+  </main></Localized>;
 }

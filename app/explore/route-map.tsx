@@ -1,5 +1,6 @@
 "use client";
 
+import { Localized } from "@/app/i18n/locale-provider";
 import { useEffect, useRef, useState } from "react";
 import type { Map as LeafletMap } from "leaflet";
 import type { Place } from "@/lib/routes";
@@ -32,7 +33,7 @@ export function RouteMap({ stops }: { stops: Place[] }) {
           const { lat, lng } = location(p);
           return L.latLng(lat, lng);
         });
-        map = L.map(element!, { scrollWheelZoom: false, zoomSnap: 0.5 });
+        map = L.map(element!, { scrollWheelZoom: false, zoomSnap: 0.5, zoomAnimation: false, fadeAnimation: false, markerZoomAnimation: false });
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
           maxZoom: 19,
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
@@ -56,8 +57,8 @@ export function RouteMap({ stops }: { stops: Place[] }) {
             className: "walk-map-number", offset: [0, 0],
           }).bindPopup(popup).addTo(map!);
         });
-        map.fitBounds(L.latLngBounds(coordinates), { padding: [40, 40], maxZoom: 16 });
-        resize = new ResizeObserver(() => map?.invalidateSize());
+        map.fitBounds(L.latLngBounds(coordinates), { padding: [40, 40], maxZoom: 16, animate: false });
+        resize = new ResizeObserver(() => { if (!cancelled) map?.invalidateSize({ animate: false, pan: false }); });
         resize.observe(element!);
         setMessage("");
       } catch {
@@ -69,13 +70,13 @@ export function RouteMap({ stops }: { stops: Place[] }) {
       if (entry.isIntersecting) { observer.disconnect(); void initialize(); }
     });
     observer.observe(element);
-    return () => { cancelled = true; observer.disconnect(); resize?.disconnect(); map?.remove(); };
+    return () => { cancelled = true; observer.disconnect(); resize?.disconnect(); map?.stop(); map?.eachLayer(layer => layer.unbindTooltip()); map?.remove(); };
   }, [encodedStops]);
 
-  return <figure className="walk-route-map">
+  return (<Localized><figure className="walk-route-map">
     <div className="walk-map-heading"><strong>Your route at a glance</strong><span>Tap a numbered stop</span></div>
     <div ref={container} className="walk-map-canvas" role="region" aria-label="Interactive map of this walk's numbered stops" />
     {message && <p className="walk-small" role="status">{message}</p>}
     <figcaption>Numbers match the stops below. Dotted lines show visit order; use walking directions for the street route.</figcaption>
-  </figure>;
+  </figure></Localized>);
 }
