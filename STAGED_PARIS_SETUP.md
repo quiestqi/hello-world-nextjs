@@ -122,3 +122,6 @@ Gemini 排查：桌面原项目及当前项目 `.env.local` 均只有 Supabase �
 
 ### 2026-10-15 三段流程与新增迁移
 入口地图 → 定制旅程（一次三候选，选择后评分）→ 城市回声（自由落点，默认私人，可匿名公开）。原项目已执行 `202610150005_city_echoes.sql` 和 `202610150006_journey_options.sql`；新环境在 001–004 后按顺序执行这两份迁移。完整初始化脚本也包含这两份迁移，勿在已初始化环境重复运行整个脚本。RLS／批次事务验证见 `supabase/tests/city_echoes.sql`、`supabase/tests/journey_options.sql`，均回滚测试数据。
+
+### 正式站点（2026-10-16 已更新）
+https://hello-world-nextjs-peach.vercel.app/ 已由原 Vercel 项目部署 main 提交 927bac6。Google 登录、Supabase 云数据、真实 Gemini 三候选生成及地图已在线验证。后续向同一 main 分支推送即可由原项目自动部署；无需重建项目或数据库。

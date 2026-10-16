@@ -6,10 +6,10 @@ import Explorer from "@/app/paris/explorer";
 import type { NotebookEntry } from "@/lib/paris-data";
 
 export default async function Home() {
-  if (!isAuthConfigured()) redirect("/preview");
+  if (!isAuthConfigured()) redirect("/login");
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return <Explorer preview storageMode="device" storageKey="staged-paris:preview:v1" />;
+  if (!user) redirect("/login");
   const { data: profile, error } = await supabase.from("profiles").select("first_name,last_name").eq("id", user.id).single();
   if (error) return <main style={{ padding: 40 }}>Unable to load profile, please try again later.</main>;
   if (!profile.first_name?.trim() || !profile.last_name?.trim()) redirect("/profile");

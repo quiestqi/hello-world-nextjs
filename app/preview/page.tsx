@@ -1,5 +1,3 @@
-import Explorer from "@/app/paris/explorer";
+import { redirect } from "next/navigation";
 
-export default function Preview() {
-  return <Explorer preview storageMode="device" storageKey="staged-paris:preview:v1" />;
-}
+export default function FormerPreview() { redirect("/"); }

@@ -339,3 +339,22 @@ Gemini 排查：桌面原项目及当前项目 `.env.local` 均只有 Supabase �
 
 ## 2026-10-16 — Vercel 发布准备
 用户已明确授权更新原 Vercel 项目。当前 lint、29 项测试及 production build 全部通过；待发布文件已检查无 Gemini 私钥，.env.local 继续被忽略。生产构建固定为 next build --webpack，与本地验证一致。已确认原项目关联 quiestqi/hello-world-nextjs，生产环境已有 GEMINI_API_KEY 及 Supabase 两个配置；不上传本地密钥。正在提交 main 并等待原 Vercel 项目自动部署，最终 Ready 状态及线上验证记录随后补充。
+
+
+## 2026-10-16 — 已正式发布到原 Vercel 项目
+
+- 正式网址：https://hello-world-nextjs-peach.vercel.app/
+- Vercel 原项目：quiestqi/hello-world-nextjs。
+- 已推送 GitHub main：927bac6092dff69b10c1aa0f7ac59ff34fe8e6ec。
+- 对应部署：GNFkpoC1TT6r2Wk6JXhjRVn7YYyk，Production / Current / Ready，Vercel 构建耗时 58 秒。
+- 发布前 lint、29 项测试、webpack production build 通过；生产环境原有 Gemini 与 Supabase 配置保留，没有上传 .env.local 或复制任何私钥到仓库。
+- 正式域名实际验收：未登录可浏览故事地图；Google 原测试账号登录成功并返回正式域名；姓名与云收藏加载正常；生成页识别无限测试账号；真实 Gemini 一次生成三条英文路线、保存并跳到新批次；展开地图后瓦片与标注正常；城市回声地图读取到已有标记。
+- 截图：工作区 staged-city-production.jpg、staged-city-production-routes.jpg、staged-city-vercel-ready.jpg。没有发布测试公共回声。
+
+此前各日期标注的「本地未部署」是当时的历史状态；当前线上以本条发布记录为准。此段为发布后本地验收记录，线上源代码提交仍是上述 927bac6。
+
+
+## 2026-10-16 — 入口改为必须登录
+用户明确要求先登录，再进入地图和三个步骤。首页未登录直接跳 /login；proxy 对所有内容路由统一验证会话，包括 /preview、/journeys?preview=1、/journeys/routes?preview=1、/stories。原预览路由不再展示内容，已登录访问会返回首页。登录页移除「先浏览」链接。各主要服务端页面也保留身份校验，登录和 OAuth callback、字体等静态资源保持可访问。已有有效会话的用户可直接继续探索，不强制重复登录。
+
+31 项测试、lint、生产构建通过。匿名本地 HTTP 检查：首页、旧预览、旅程与回声路由全部 307 到 /login；/login 与哥特字体 200。接着推送 main 更新原 Vercel 项目并验证正式域名。

@@ -20,7 +20,8 @@ type RouteRow = { id: string; user_id: string; content: LiteraryRoute; duration:
 export default async function JourneyRoutes({ searchParams }: { searchParams: Promise<{ batch?: string; preview?: string; perspective?: string; theme?: string; duration?: string; start?: string; interests?: string | string[]; wish?: string }> }) {
   const params = await searchParams;
   const locale = await getLocale();
-  const preview = params.preview === "1" || !isAuthConfigured();
+  if (!isAuthConfigured()) redirect("/login");
+  const preview = false;
   let rows: RouteRow[] = [], votes: { route_id: string; value: number }[] = [], totals: { route_id: string; upvotes: number; downvotes: number }[] = [], prompts: { route_id: string; prompt: string }[] = [];
   let chosenRoute = "";
   let uid = "", connected = false, votesFailed = false;

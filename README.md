@@ -2,7 +2,7 @@
 
 A solo literary walking experience in Paris, based on Victor Hugo’s *Notre-Dame de Paris*. Built-in English / 中文 switching covers the map, profile, route planning and Gemini-written introductions. The interface combines Gothic headings, typewriter text and monochrome panels with parchment-style maps and a small flock of cursor birds.
 
-Open `/journeys` to choose a perspective, starting point, story thread and interests. Gemini selects three pre-verified paths and writes their introductions; saved maps and route choices appear at `/journeys/routes`. Leave a private or anonymously shared text pin on the full-screen map at `/stories`. The original coffee-walk experience remains at `/explore`. See `STAGED_PARIS_SETUP.md` and `PROJECT_WORKLOG.zh-CN.md` for current setup and verified status.
+Sign in with Google before accessing the story map or any journey step. Former preview URLs redirect to the protected entry. Open `/journeys` to choose a perspective, starting point, story thread and interests. Gemini selects three pre-verified paths and writes their introductions; saved maps and route choices appear at `/journeys/routes`. Leave a private or anonymously shared text pin on the full-screen map at `/stories`. The original coffee-walk experience remains at `/explore`. See `STAGED_PARIS_SETUP.md` and `PROJECT_WORKLOG.zh-CN.md` for current setup and verified status.
 
 新版 STAGED CITY 的入口、登录/推荐/评分保留情况与上线步骤见 [STAGED_PARIS_SETUP.md](./STAGED_PARIS_SETUP.md)。
 

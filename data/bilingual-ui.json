@@ -373,5 +373,6 @@
   "Not enough distinct supported walks begin here. Please try another starting point.": "从这里出发的不同路线还不够，请尝试另一个起点。",
   "✓ Three new journeys are ready. Open a card to see its map.": "✓ 三条新旅程已生成，展开卡片就能看到路线地图。",
   "Your new journeys are ready. Open a card to explore.": "新旅程已生成，展开卡片开始探索。",
-  "Creating three journeys and saving your maps… Please keep this page open.": "正在生成三条旅程并保存路线地图……请保持页面打开。"
+  "Creating three journeys and saving your maps… Please keep this page open.": "正在生成三条旅程并保存路线地图……请保持页面打开。",
+  "Sign-in is temporarily unavailable. Please try again later.": "登录服务暂时不可用，请稍后再试。"
 }

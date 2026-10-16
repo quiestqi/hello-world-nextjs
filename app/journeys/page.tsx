@@ -7,9 +7,9 @@ import { JourneyForm } from "./forms";
 import "@/app/paris/paris.css";
 
 export const maxDuration = 180;
-export default async function JourneyStart({ searchParams }: { searchParams: Promise<{ preview?: string }> }) {
-  const params = await searchParams;
-  const preview = params.preview === "1" || !isAuthConfigured();
+export default async function JourneyStart() {
+  if (!isAuthConfigured()) redirect("/login");
+  const preview = false;
   let connected = false, unlimited = false;
   if (!preview) {
     const supabase = await createClient();

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import {redirect} from "next/navigation";
 import { LanguageSwitch, Localized } from "@/app/i18n/locale-provider";
 import { createClient } from "@/lib/supabase/server";
 import { isAuthConfigured } from "@/lib/auth-config";
@@ -7,10 +8,11 @@ import Explorer from "@/app/paris/explorer";
 import "@/app/paris/paris.css";
 export default async function Stories({searchParams}:{searchParams:Promise<{preview?:string;view?:string}>}) {
  const params=await searchParams;
+ if(!isAuthConfigured()) redirect("/login");
  let signedIn=false, connected=false;
  let echoes:{id:string;lat:number;lng:number;body:string;is_public:boolean}[]=[];
  if(isAuthConfigured()) {
- const db=await createClient(); const {data:{user}}=await db.auth.getUser(); signedIn=!!user;
+ const db=await createClient(); const {data:{user}}=await db.auth.getUser(); if(!user) redirect("/login"); signedIn=true;
  const {data:publicEchoes,error}=await db.rpc('read_city_echoes'); connected=!error;
  const {data:own}=user?await db.from('literary_echoes').select('id,lat,lng,body,is_public').eq('user_id',user.id):{data:[]};
  const byId=new Map<string,{id:string;lat:number;lng:number;body:string;is_public:boolean}>();
