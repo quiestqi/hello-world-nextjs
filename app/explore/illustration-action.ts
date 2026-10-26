@@ -1,5 +1,6 @@
 "use server";
 
+import {finishTrace} from "@/lib/generation-trace";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requestGeminiJson } from "@/lib/gemini-json";
@@ -26,15 +27,18 @@ export async function generateIllustration(_previous: Result, form: FormData): P
   const { data: path, error: claimError } = await supabase.rpc("claim_illustration",{p_id:id,p_prompt:prompt});
   if (claimError) return { error: claimError.message.includes("Daily") ? "You've reached today's map generation limit." : "Couldn't start the illustration. Please try again." };
   if (!path) { revalidatePath("/explore"); return { success: "This walk already has a map or one is being drawn. Refresh in a moment." }; }
+  let traceId:string|undefined;
   let model = imageMode ? process.env.GEMINI_IMAGE_MODEL || "gemini-3.1-flash-lite-image" : process.env.GEMINI_MODEL || "gemini-flash-lite-latest";
   async function fail(message: string): Promise<Result> {
+    await finishTrace(traceId,"failed","Illustration generation or validation failed");
     await supabase.rpc("finish_illustration",{p_id:id,p_path:path,p_model:model,p_success:false});
     revalidatePath("/explore");
     return { error: message };
   }
   try {
     if (!imageMode) {
-      const generated = await requestGeminiJson(key,prompt);
+      const generated = await requestGeminiJson(key,prompt,undefined,{source:"illustration"});
+      traceId=generated.traceId;
       model = generated.model;
       const response = generated.response;
       if (!response.ok) return fail(response.status === 429 ? "Gemini's free text quota is temporarily full. Try again later." : "Gemini couldn't finish the map design. Try again later.");
@@ -50,6 +54,7 @@ export async function generateIllustration(_previous: Result, form: FormData): P
       const { error } = await supabase.rpc("save_illustration_design",{p_id:id,p_path:path,p_model:model,p_design:design});
       if (error) return fail("Couldn't save the map design. Please try again.");
       revalidatePath("/explore");
+      await finishTrace(traceId,"saved",undefined,[id]);
       return { success:"Your illustrated map is ready." };
     }
     const request = (name: string) => fetch("https://generativelanguage.googleapis.com/v1beta/interactions",{

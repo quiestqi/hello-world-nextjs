@@ -1,5 +1,6 @@
 "use server";
 
+import {finishTrace} from "@/lib/generation-trace";
 import { getLocale } from "@/app/i18n/locale-server";
 import { createClient } from "@/lib/supabase/server";
 import { requestGeminiJson } from "@/lib/gemini-json";
@@ -42,8 +43,10 @@ export async function writeJourneyPoem(id: string): Promise<PoetryResult> {
   if (recent.size > 1000) recent.clear();
   recent.set(user.id, [...attempts, now]);
   const work = (async (): Promise<PoetryResult> => {
+    let traceId:string|undefined;
     try {
-      const { response } = await requestGeminiJson(key, prompt, { type: "OBJECT", properties: { text: { type: "STRING" } }, required: ["text"] });
+      const { response,traceId:recordedId } = await requestGeminiJson(key, prompt, { type: "OBJECT", properties: { text: { type: "STRING" } }, required: ["text"] },{source:"poetry"});
+      traceId=recordedId;
       if (!response.ok) return { error: "The poetic introduction is not yet finished, please try again later." };
       const output = await response.json();
       const candidate = output.candidates?.[0];
@@ -54,8 +57,9 @@ export async function writeJourneyPoem(id: string): Promise<PoetryResult> {
       if (!candidates.filter(p => row.content.stops.some((s: { place_id: string }) => s.place_id === p.id)).every(p => text.includes(p.name))) throw Error("Missing route places");
       if (cache.size >= 100) cache.delete(cache.keys().next().value!);
       cache.set(cacheKey, { text, expires: Date.now() + 3600000 });
+      await finishTrace(traceId,"validated");
       return { text };
-    } catch { return { error: "The poetic introduction is not yet finished, please try again later." }; }
+    } catch { await finishTrace(traceId,"failed","Poem validation failed");return { error: "The poetic introduction is not yet finished, please try again later." }; }
   })();
   inFlight.set(cacheKey, work);
   try { return await work; } finally { inFlight.delete(cacheKey); }

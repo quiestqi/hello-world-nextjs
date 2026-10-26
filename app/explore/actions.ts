@@ -1,5 +1,7 @@
 "use server";
 
+import {requestGeminiJson} from "@/lib/gemini-json";
+import {finishTrace} from "@/lib/generation-trace";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { buildPrompt, chooseVariation, moods, neighborhoods, validateWalk, type Place, type Walk } from "@/lib/routes";
@@ -28,40 +30,11 @@ export async function generateWalk(_previous: Result, form: FormData): Promise<R
   const { data: attempt, error: quotaError } = await supabase.rpc("reserve_generation");
   if (quotaError || !attempt) return { error: quotaError?.message.includes("Daily generation") ? "You've used your five attempts for the last 24 hours. Come back tomorrow." : "Unable to start a generation. Please try again." };
   const prompt = buildPrompt(places, mood, duration, variation);
-  let model = process.env.GEMINI_MODEL || "gemini-flash-lite-latest";
+  let traceId:string|undefined;
   try {
-    const requestModel = (name: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(name)}:generateContent`, {
-      method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: {
-        responseMimeType: "application/json", maxOutputTokens: 4096,
-        responseSchema: { type: "OBJECT", properties: {
-          title: { type: "STRING" }, summary: { type: "STRING" }, stops: { type: "ARRAY", minItems: 3, maxItems: 4, items: { type: "OBJECT", properties: {
-            place_id: { type: "STRING", enum: places.map(p => p.id) }, reason: { type: "STRING" }, activity: { type: "STRING" }, minutes: { type: "INTEGER" }
-          }, required: ["place_id","reason","activity","minutes"] } }
-        }, required: ["title","summary","stops"] }
-      } }), signal: AbortSignal.timeout(30000), cache: "no-store"
-    });
-    let response = await requestModel(model);
-    if ([404,503].includes(response.status) && !process.env.GEMINI_MODEL) {
-      // Model availability can vary by key. Discover supported text models instead of guessing IDs.
-      const catalogue = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", {
-        headers: { "x-goog-api-key": apiKey }, signal: AbortSignal.timeout(10000), cache: "no-store"
-      });
-      if (catalogue.ok) {
-        const { models = [] } = await catalogue.json();
-        const alternatives = models.filter((m: { name: string; supportedGenerationMethods?: string[] }) =>
-          m.supportedGenerationMethods?.includes("generateContent") && /^models\/gemini-.*flash/.test(m.name) &&
-          !/image|audio|tts|live|embedding|cyber/.test(m.name) && m.name !== `models/${model}`
-        ).map((m: { name: string }) => m.name.replace("models/", "")) as string[];
-        alternatives.sort((a,b) => Number(b.includes("lite"))-Number(a.includes("lite")) || b.localeCompare(a, undefined, { numeric: true }));
-        console.info("coffee-walk available fallback models", { models: alternatives.slice(0,5) });
-        for (const alternative of alternatives.slice(0,2)) {
-          model = alternative;
-          response = await requestModel(model);
-          if (![404,503].includes(response.status)) break;
-        }
-      }
-    }
+    const schema={type:"OBJECT",properties:{title:{type:"STRING"},summary:{type:"STRING"},stops:{type:"ARRAY",minItems:3,maxItems:4,items:{type:"OBJECT",properties:{place_id:{type:"STRING",enum:places.map(p=>p.id)},reason:{type:"STRING"},activity:{type:"STRING"},minutes:{type:"INTEGER"}},required:["place_id","reason","activity","minutes"]}}},required:["title","summary","stops"]};
+    const {response,model,traceId:recordedId}=await requestGeminiJson(apiKey,prompt,schema,{source:"legacy-walk"});
+    traceId=recordedId;
     if (!response.ok) {
       // Log codes only: provider bodies may contain credentials or request data.
       console.error("coffee-walk model request", { model, status: response.status });
@@ -79,12 +52,15 @@ export async function generateWalk(_previous: Result, form: FormData): Promise<R
     }
     const text = candidate.content?.parts?.filter((p: { text?: string; thought?: boolean }) => p.text && !p.thought).map((p: { text: string }) => p.text).join("");
     const walk = validateWalk(JSON.parse(text), places, duration, variation);
-    const { error: saveError } = await supabase.rpc("save_generation", { p_attempt: attempt, p_content: walk, p_prompt: prompt, p_mood: mood, p_duration: duration, p_model: model });
+    const { data:savedId,error: saveError } = await supabase.rpc("save_generation", { p_attempt: attempt, p_content: walk, p_prompt: prompt, p_mood: mood, p_duration: duration, p_model: model });
     if (saveError) {
+      await finishTrace(traceId,"failed","Legacy route save rejected");
       console.error("coffee-walk save failed", { code: saveError.code });
       return { error: "Your walk could not be saved. Please try again." };
     }
+    await finishTrace(traceId,"saved",undefined,[savedId]);
   } catch (failure) {
+    await finishTrace(traceId,"failed","Legacy route validation or save failed");
     console.error("coffee-walk generation failed", { category: failure instanceof Error ? failure.name : "unknown" });
     return { error: "The AI couldn't finish a valid walk this time. Please try again. This attempt counts toward your daily limit." };
   }
