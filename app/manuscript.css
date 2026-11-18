@@ -1,5 +1,5 @@
-@font-face{font-family:'Staged Blackletter';src:url('/fonts/UnifrakturMaguntia-Book.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
-:root{--vellum:#eee5ce;--vellum-light:#f8f1df;--manuscript-ink:#342e25;--rubric:#833f35;--old-gold:#a38a54;--manuscript-rule:#c7b995;--gothic:'Staged Blackletter','Kaiti SC','STKaiti','KaiTi','Songti SC',serif;--reading:Georgia,'Songti SC','Noto Serif CJK SC',serif;--paper-grain:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.06' filter='url(%23n)'/%3E%3C/svg%3E")}
+@font-face{font-family:'Grenze Gotisch';src:url('/fonts/GrenzeGotisch.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+:root{--vellum:#eee5ce;--vellum-light:#f8f1df;--manuscript-ink:#342e25;--rubric:#833f35;--old-gold:#a38a54;--manuscript-rule:#c7b995;--gothic:'Grenze Gotisch','Kaiti SC','STKaiti','KaiTi','Songti SC',serif;--reading:Georgia,'Songti SC','Noto Serif CJK SC',serif;--paper-grain:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.06' filter='url(%23n)'/%3E%3C/svg%3E")}
 html body{background:var(--vellum);color:var(--manuscript-ink);font-family:var(--reading)}
 body .paris-app{--paper:var(--vellum-light);--ink:var(--manuscript-ink);--muted:#80745f;--red:var(--rubric);--line:var(--manuscript-rule);--serif:var(--reading);background-color:var(--vellum-light);background-image:var(--paper-grain),radial-gradient(ellipse at 50% 0,#fffaf0 0,transparent 70%);font-family:var(--reading);color:var(--manuscript-ink)}
 body .paris-app h1,body .paris-app h2,body .paris-app h3,body .paris-app h4,body .walks-app h1,body .walks-app h2{font-family:var(--gothic);font-weight:400;letter-spacing:.1px;color:var(--manuscript-ink)}
@@ -124,7 +124,7 @@ body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1{font-
 body .paris-app .journey-perspectives strong{font-size:26px;font-weight:500}
 body .theatre-login .theatre-stage h1{font-weight:500}
 
-/* Almendra: a lighter manuscript hand between ornate blackletter and a formal serif. */
+/* Restrained heading weights and sizes for literary typography. */
 body .paris-app h1,body .paris-app h2,body .paris-app h3,body .paris-app h4,body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1,body .paris-app .journey-perspectives strong,body .theatre-login .theatre-stage h1{font-weight:400;font-synthesis:none}
 body .paris-app .paris-brand{font-size:24px;font-weight:400;letter-spacing:1.6px}
 body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1{font-size:clamp(39px,4.2vw,59px);line-height:1.16}
@@ -136,7 +136,7 @@ body .paris-app .echo-atlas-heading h1{font-size:34px}
 body .paris-app .brand-mark{font-size:31px}
 @media(max-width:750px){body .paris-app .paris-brand{font-size:21px}body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1{font-size:39px}body .paris-app .echo-atlas-heading h1{font-size:27px}}
 
-/* Restore the first, ornate Gothic face at the user's request. */
+/* Shared Gothic heading sizes across the application. */
 body .paris-app .paris-brand{font-size:26px;letter-spacing:.7px;font-weight:400}
 body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1{font-size:clamp(42px,4.7vw,67px);line-height:1.1}
 body .paris-app .journey-perspectives strong{font-size:25px;line-height:1.15}
@@ -145,7 +145,7 @@ body .paris-app .journey-route-summary h3{font-size:29px;line-height:1.15}
 body .paris-app .sidebar-intro h1{font-size:37px;line-height:1.18}
 body .paris-app .echo-atlas-heading h1{font-size:37px}
 @media(max-width:750px){body .paris-app .paris-brand{font-size:23px}body .paris-app .sidebar-intro h1{font-size:33px}body .paris-app .journey-hero h1,body .paris-app .journey-results-intro h1{font-size:42px}body .paris-app .echo-atlas-heading h1{font-size:28px}}
-/* White paper, black ink — keep the first Gothic face and motion. */
+/* White paper, black ink, and motion. */
 :root{--vellum:#fff;--vellum-light:#fff;--manuscript-ink:#111;--rubric:#111;--old-gold:#777;--manuscript-rule:#d5d5d5;--paper-grain:none}
 html body,body .paris-app,body .theatre-login,body .walk-app{background:#fff;color:#111}
 body .paris-app{--paper:#fff;--ink:#111;--red:#111;--muted:#777;--line:#ddd}
