@@ -41,6 +41,6 @@ export function buildPrompt(places: Place[], mood: string, duration: number, var
 }
 
 export function mapsUrl(stops: Place[]) {
-  const params = new URLSearchParams({ api: "1", travelmode: "walking", origin: stops[0].address, destination: stops.at(-1)!.address, waypoints: stops.slice(1, -1).map(p => p.address).join("|") });
+  const params = new URLSearchParams({ api: "1", hl: "en", travelmode: "walking", origin: stops[0].address, destination: stops.at(-1)!.address, waypoints: stops.slice(1, -1).map(p => p.address).join("|") });
   return `https://www.google.com/maps/dir/?${params}`;
 }

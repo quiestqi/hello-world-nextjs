@@ -14,6 +14,6 @@ export function AreaMap({ neighborhood }: { neighborhood: string }) {
       allowFullScreen
       referrerPolicy="strict-origin-when-cross-origin"
     />
-    <figcaption><span>{area}</span><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`} target="_blank" rel="noreferrer">Open in Google Maps ↗</a></figcaption>
+    <figcaption><span>{area}</span><a href={`https://www.google.com/maps/search/?api=1&hl=en&query=${encodeURIComponent(query)}`} target="_blank" rel="noreferrer">Open in Google Maps ↗</a></figcaption>
   </figure></Localized>);
 }

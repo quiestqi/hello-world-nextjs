@@ -78,10 +78,22 @@ export function JourneyMap({ stops }: { stops: MapStop[] }) {
     };
   }, [encodedStops, locale]);
 
-  return <Localized><figure className="journey-map">
+  return <Localized><><figure className="journey-map">
     <div className="journey-map-heading"><strong>This route, in Paris</strong><span>Explore sequentially by number</span></div>
     <div ref={container} className="journey-map-canvas" role="region" aria-label={`Route Map:${stops.map((p, i) => `${i + 1} ${p.name}`).join("，")}`} />
     {message && <p className="journey-map-message" role="status">{message}</p>}
     <figcaption><div className="journey-map-legend">{stops.map((p, i) => <span key={p.id}><b>{i + 1}</b>{p.name}</span>)}</div><p>Dashed lines indicate the visiting sequence; open walking navigation for actual street directions.</p></figcaption>
-  </figure></Localized>;
+  </figure>
+  <section className="journey-street-view" aria-label={locale === "zh" ? "Google 街景导览" : "Google Street View"}>
+    <p className="eyebrow">{locale === "zh" ? "GOOGLE 街景 · 实景导览" : "GOOGLE STREET VIEW · EXPLORE AT STREET LEVEL"}</p>
+    <p>{locale === "zh" ? "按路线顺序，看看今天的街道。" : "Step into today’s streets, one stop at a time."}</p>
+    <ol>{stops.map((stop, index) => <li key={stop.id}>
+      <a href={`https://www.google.com/maps/@?${new URLSearchParams({ api: "1", hl: "en", map_action: "pano", viewpoint: `${stop.lat},${stop.lng}` })}`} target="_blank" rel="noopener noreferrer" aria-label={`${locale === "zh" ? "打开街景：" : "Open Street View: "}${translateText(stop.name, locale)}${locale === "zh" ? "（新标签页）" : " (new tab)"}`}>
+        <span className="street-view-number">{String(index + 1).padStart(2, "0")}</span>
+        <span>{translateText(stop.name, locale)}</span>
+        <span className="street-view-action">{locale === "zh" ? "街景 ↗" : "Street View ↗"}</span>
+      </a>
+    </li>)}</ol>
+    <small>{locale === "zh" ? "在新标签页打开地点附近的现代实景；街景覆盖以 Google Maps 为准。" : "Opens nearby modern imagery in a new tab. Street View availability depends on Google Maps coverage."}</small>
+  </section></></Localized>;
 }

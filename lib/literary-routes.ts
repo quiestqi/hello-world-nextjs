@@ -44,7 +44,7 @@ export function literaryDirections(stops: LiteraryStop[], candidates: RouteCandi
   const points = stops.map(s => candidates.find(c => c.id === s.place_id)).filter((p): p is RouteCandidate => Boolean(p));
   if (points.length !== stops.length || points.length < 2) return null;
   const coordinate = (p: RouteCandidate) => `${p.lat},${p.lng}`;
-  const params = new URLSearchParams({ api: "1", travelmode: "walking", origin: coordinate(points[0]), destination: coordinate(points.at(-1)!) });
+  const params = new URLSearchParams({ api: "1", hl: "en", travelmode: "walking", origin: coordinate(points[0]), destination: coordinate(points.at(-1)!) });
   if (points.length > 2) params.set("waypoints", points.slice(1, -1).map(coordinate).join("|"));
   return `https://www.google.com/maps/dir/?${params}`;
 }

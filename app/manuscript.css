@@ -179,3 +179,22 @@ body .paris-app .journey-poetry .poetry-text{font-family:var(--typewriter)}
 body .paris-app .poetry-text:first-letter{font-family:var(--gothic)}
 body .paris-app .leaflet-container,body .paris-app .leaflet-tooltip,body .paris-app .leaflet-popup-content,body .walk-app .leaflet-container{font-family:var(--typewriter)}
 body .paris-app .journey-route-summary h3,body .paris-app .echo-atlas-heading h1{font-family:var(--gothic)}
+
+/* Pure blue map pins; preserve the original backgrounds and interface colors. */
+body .paris-app .paris-map-pin{background:#0000ff;color:#fff;border-color:#0000ff}
+body .paris-app .paris-map-pin.is-active{background:#0000ff;color:#fff;border-color:#fff;outline-color:#0000ff33}
+body .paris-app .journey-map-pin{background:#0000ff;color:#fff;border-color:#fff}
+body .paris-app .echo-atlas .echo-pin span,body .paris-app .echo-pin span{background:#0000ff;color:#fff;border-color:#0000ff}
+
+/* Route-by-route links into Google Maps Street View. */
+body .paris-app .journey-street-view{margin:20px 0 26px;padding:20px 0;border-top:1px solid #ddd;border-bottom:1px solid #ddd}
+body .paris-app .journey-street-view>p{margin:0 0 12px;font-size:12px;line-height:1.8}
+body .paris-app .journey-street-view .eyebrow{font-size:10px;letter-spacing:1px;color:#555}
+body .paris-app .journey-street-view ol{list-style:none;padding:0;margin:16px 0;display:grid;gap:8px}
+body .paris-app .journey-street-view li{display:block;padding:0;margin:0}
+body .paris-app .journey-street-view a{display:flex;width:100%;box-sizing:border-box;align-items:center;gap:12px;padding:12px 14px;border:1px solid #ddd;color:#111;text-decoration:none;font-size:12px;line-height:1.6}
+body .paris-app .journey-street-view a:hover{border-color:#0000ff;background:#f7f7ff}
+body .paris-app .street-view-number{color:#0000ff;flex-shrink:0}
+body .paris-app .street-view-action{margin-left:auto;white-space:nowrap}
+body .paris-app .journey-street-view small{display:block;font-size:10px;line-height:1.8;color:#777}
+@media(max-width:550px){body .paris-app .journey-street-view a{flex-wrap:wrap}body .paris-app .street-view-action{width:100%;padding-left:28px}}
